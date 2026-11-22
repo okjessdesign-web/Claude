@@ -8,16 +8,23 @@ PATCHES = [
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
-   "  .pill span[aria-hidden] { font-size: 1.9em; line-height: 0; position: relative; top: -.06em; }   /* the arrow, larger than the text */\n"],
+   "  .pill .arw { display: block; width: 1.9em; height: 1.1em; flex: none; }   /* the arrow, drawn bold and larger than the text */\n"],
   # cursor: the arrow only shows on an image or in the gap between images, never over the header/menu
   ["      var inWorks = !!(el && el.closest && el.closest('#works, .arrow-zone'));     // the arrow stays an arrow through the whole works section\n" \
    "      var a = !!(el && el.closest && el.closest('.shot'));             // ...and blends ('difference') over the images\n",
    "      var inHead = py <= headerBar.getBoundingClientRect().bottom + 6;   // never an arrow over the logo, tagline or menu\n" \
    "      var a = !inHead && !!(el && el.closest && el.closest('.shot'));   // on an image: arrow, blended ('difference')\n" \
    "      var onText = !!(el && el.closest && el.closest('.t, .tags, .whead, .lab, .body-copy, .pill, .meta, a.work .t'));\n" \
-   "      var inWorks = !inHead && (a || (!onText && betweenShots()));       // ...and in the gap between two images\n"],
+   "      var inWorks = !inHead && (a || (!onText && betweenShots()));       // ...and in the gap between two images\n" \
+   "      if (worksLine && py <= worksLine.getBoundingClientRect().bottom) { a = false; inWorks = false; }   // homepage: always a dot above the line under Selected Works\n"],
+  # bigger footer links and project tags
+  ["  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n",
+   "  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n" \
+   "  .f-info { font-size: 16px; gap: 10px; }\n" \
+   "  .work .tags, .g .meta .tags, .more .work .tags { font-size: 15px; gap: 0 14px; margin-top: 5px; }\n"],
   ["    function check() {\n",
    "    var headerBar = document.querySelector('header');\n" \
+   "    var worksLine = document.querySelector('#works > .whead');\n" \
    "    function betweenShots() {                       // is the pointer in the gap with an image on both sides (left+right or above+below)?\n" \
    "      var G = Math.max(24, window.innerWidth * 0.02), shots = document.querySelectorAll('.shot');\n" \
    "      var L = false, R = false, U = false, D = false;\n" \
@@ -30,6 +37,8 @@ PATCHES = [
    "    }\n" \
    "    function check() {\n"],
 ]
+ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
+def arrows(s) s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG) end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
 end
@@ -39,7 +48,7 @@ TPL = patch(File.read(File.join(SITE, 'noko-blind-box_1.html')))
 # Homepage: same patches, and project links point at the local pages
 home = patch(File.read(File.join(SITE, 'index_1.html')))
   .gsub(%r{https://okjess\.com/(beyond-the-trails|solis|atelier-co|mind-motion|framed-together|collective-moments|corbeau-mocktail-lounge)"}, '\1.html"')
-File.write(File.join(SITE, 'index.html'), home)
+File.write(File.join(SITE, 'index.html'), arrows(home))
 
 EXTRA_CSS = <<CSS
 
@@ -247,6 +256,6 @@ ORDER.each do |slug|
 
     #{tail}
   HTML
-  File.write(File.join(SITE, "#{slug}.html"), html)
+  File.write(File.join(SITE, "#{slug}.html"), arrows(html))
   puts "#{slug}.html  #{html.bytesize / 1024} KB"
 end

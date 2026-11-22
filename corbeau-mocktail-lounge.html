@@ -202,7 +202,7 @@
     transition: background-color .2s ease, color .2s ease;
   }
   .pill:hover { background: var(--fg); color: var(--bg); }
-  .pill span[aria-hidden] { font-size: 1.9em; line-height: 0; position: relative; top: -.06em; }   /* the arrow, larger than the text */
+  .pill .arw { display: block; width: 1.9em; height: 1.1em; flex: none; }   /* the arrow, drawn bold and larger than the text */
   .fade { opacity: 0; transform: translateY(14px); transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.16, 1, .3, 1); }
   .f-head.fade { transition-delay: .15s; }
   .f-pill { transition-delay: .5s; }
@@ -212,6 +212,8 @@
     transition-delay: .7s;
   }
   .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .f-info { font-size: 16px; gap: 10px; }
+  .work .tags, .g .meta .tags, .more .work .tags { font-size: 15px; gap: 0 14px; margin-top: 5px; }
   /* time + copyright run along the very bottom, on the same line as the name's baseline */
   .f-bottom {
     position: absolute; right: 1.95vw; bottom: calc(var(--extra, 24px) + 4px);
@@ -338,7 +340,7 @@
     <div class="lab fade">About</div>
     <div class="idesc fade">
       <p class="body-copy">Corbeau is an alcohol free 18+ lounge designed as an alternative to traditional nightlife. This project includes branding, print, and web deliverables that support both the physical space and its online presence. Deliverables include the core brand identity, printed menus, signage, and supporting brand materials, along with a website that reflects the tone of the lounge. Together, these elements create a consistent experience across in person and digital touchpoints, clearly communicating what Corbeau is and who it is&nbsp;for.</p>
-      <a class="pill" href="https://familiar-balance-204707.framer.app/" target="_blank" rel="noopener"><span>Link</span><span aria-hidden="true">&rarr;</span></a>
+      <a class="pill" href="https://familiar-balance-204707.framer.app/" target="_blank" rel="noopener"><span>Link</span><svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg></a>
     </div>
   </section>
 
@@ -391,7 +393,7 @@
     <div>
       <h4 class="f-head fade">Available for work and always looking for exciting projects.</h4>
       <div class="fade f-pill">
-        <a class="pill" href="mailto:okjessdesign@gmail.com"><span>okjessdesign@gmail.com</span><span aria-hidden="true">&rarr;</span></a>
+        <a class="pill" href="mailto:okjessdesign@gmail.com"><span>okjessdesign@gmail.com</span><svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg></a>
       </div>
     </div>
     <div class="f-info fade">
@@ -596,6 +598,7 @@
     var headerText = [].slice.call(document.querySelectorAll('.designer'));   // the header ignores the mouse, so check its text directly
     function inHeader() { return headerText.some(textHit); }
     var headerBar = document.querySelector('header');
+    var worksLine = document.querySelector('#works > .whead');
     function betweenShots() {                       // is the pointer in the gap with an image on both sides (left+right or above+below)?
       var G = Math.max(24, window.innerWidth * 0.02), shots = document.querySelectorAll('.shot');
       var L = false, R = false, U = false, D = false;
@@ -612,6 +615,7 @@
       var a = !inHead && !!(el && el.closest && el.closest('.shot'));   // on an image: arrow, blended ('difference')
       var onText = !!(el && el.closest && el.closest('.t, .tags, .whead, .lab, .body-copy, .pill, .meta, a.work .t'));
       var inWorks = !inHead && (a || (!onText && betweenShots()));       // ...and in the gap between two images
+      if (worksLine && py <= worksLine.getBoundingClientRect().bottom) { a = false; inWorks = false; }   // homepage: always a dot above the line under Selected Works
       var rd = !a && (isRed(el) || (py < 160 && inHeader()));
       if (inWorks !== arrow) { arrow = inWorks; cursor.classList.toggle('arrow', inWorks); }
       if (a !== diff) { diff = a; cursor.classList.toggle('diff', a); }
