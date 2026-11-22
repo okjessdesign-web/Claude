@@ -310,9 +310,9 @@
   .body-copy + .body-copy { margin-top: 1.1em; }   /* paragraphs that follow each other get a gap */
 
   /* ===== Agency + Client Work: floating tiles ===== */
-  .field { position: relative; height: 156.5vw; margin: 4vw 0 8vw; }
+  .field { position: relative; transition: height .6s cubic-bezier(.2, .7, .2, 1); height: 156.5vw; margin: 4vw 0 8vw; }
   .ft { position: absolute; left: var(--l); top: var(--t); width: var(--w); z-index: 1;
-        animation: drift var(--dur) ease-in-out var(--del) infinite alternate; transition: opacity .5s ease; }
+        animation: drift var(--dur) ease-in-out var(--del) infinite alternate; transition: opacity .5s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
   .ft:hover { z-index: 5; animation-play-state: paused; }
   .ft .pic { aspect-ratio: var(--ar); background: var(--tone) center / cover no-repeat; display: grid; place-items: center;
              transform-origin: var(--ox) 50%; transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
@@ -415,6 +415,68 @@
   <div class="cap"><b>Project Thirteen</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
   </div>
+  <script>
+  // Hover push: tiles keep their spots; when one is hovered, any tile in the way of its enlarged picture
+  // or caption slides down (and anything that then bumps into, too). Everything slides back on leave.
+  (function () {
+    var field = document.querySelector('.field');
+    var tiles = [].slice.call(field.querySelectorAll('.ft'));
+    var M = 28, S = 1.45;                          // breathing room (also covers the gentle drift); hover scale
+    var top = [], baseH = 0;
+    var phone = window.matchMedia('(max-width: 760px)');
+    function box(i, dy) { var t = tiles[i], p = t.firstElementChild, y = top[i] + (dy || 0); return { l: t.offsetLeft, r: t.offsetLeft + p.offsetWidth, t: y, b: y + p.offsetHeight }; }
+    function hit(a, b) { return a.l < b.r + M && a.r > b.l - M && a.t < b.b + M && a.b > b.t - M; }
+    function big(i) {                              // the hovered picture at full size, plus its caption
+      var t = tiles[i], p = t.firstElementChild, c = t.querySelector('.cap'), a = box(i);
+      var w = p.offsetWidth, h = p.offsetHeight, ox = getComputedStyle(p).transformOrigin.split(' ')[0];
+      var o = parseFloat(ox) / w || 0, gw = w * (S - 1), gh = h * (S - 1) / 2;
+      var cl = t.offsetLeft + c.offsetLeft;
+      return { l: Math.min(a.l - gw * o, cl), r: Math.max(a.r + gw * (1 - o), cl + c.offsetWidth), t: a.t - gh, b: top[i] + c.offsetTop + c.offsetHeight };
+    }
+    function setOff(off) {
+      var bottom = baseH;
+      tiles.forEach(function (t, i) { t.style.transform = off[i] ? 'translateY(' + off[i] + 'px)' : ''; bottom = Math.max(bottom, box(i, off[i]).b + M * 2); });
+      field.style.height = bottom + 'px';
+    }
+    function base() {                              // starting layout: only make sure no two pictures touch
+      tiles.forEach(function (t) { t.style.top = ''; t.style.transform = ''; });
+      field.style.height = '';
+      if (phone.matches) return;
+      top = tiles.map(function (t) { return t.offsetTop; });
+      for (var pass = 0, moved = true; moved && pass < 60; pass++) {
+        moved = false;
+        for (var i = 0; i < tiles.length; i++) for (var j = 0; j < tiles.length; j++)
+          if (i !== j && top[j] >= top[i] && hit(box(i), box(j))) { top[j] = box(i).b + M + 1; moved = true; }
+      }
+      baseH = field.offsetHeight;
+      tiles.forEach(function (t, i) { t.style.top = top[i] + 'px'; baseH = Math.max(baseH, box(i).b + M * 2); });
+      field.style.height = baseH + 'px';
+    }
+    function hover(i) {
+      if (phone.matches) return;
+      var off = tiles.map(function () { return 0; }), z = big(i);
+      for (var j = 0; j < tiles.length; j++) if (j !== i && hit(z, box(j))) off[j] = z.b + M + 1 - top[j];
+      for (var pass = 0, moved = true; moved && pass < 60; pass++) {   // pushed tiles push whatever they land on
+        moved = false;
+        for (var a = 0; a < tiles.length; a++) for (var b = 0; b < tiles.length; b++) {
+          if (a === b || a === i || b === i) continue;
+          var A = box(a, off[a]), B = box(b, off[b]);
+          if (B.t >= A.t && hit(A, B)) { off[b] = A.b + M + 1 - top[b]; moved = true; }
+        }
+      }
+      setOff(off);
+    }
+    var leaveT;
+    tiles.forEach(function (t, i) {
+      t.addEventListener('mouseenter', function () { clearTimeout(leaveT); hover(i); });
+      t.addEventListener('mouseleave', function () { leaveT = setTimeout(function () { setOff(tiles.map(function () { return 0; })); }, 60); });
+    });
+    var timer;
+    window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(base, 150); });
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(base);
+    base();
+  })();
+  </script>
 </main>
 
 <footer id="contact">
