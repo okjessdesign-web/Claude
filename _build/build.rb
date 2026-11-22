@@ -42,6 +42,7 @@ MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a
 def arrows(s)
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
+   .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')   # Info taken out of the menu
 end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
