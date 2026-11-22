@@ -8,7 +8,7 @@ PATCHES = [
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
-   "  .pill .arw { display: block; width: 1.6em; height: 0.95em; flex: none; }   /* the arrow, drawn bold and larger than the text */\n"],
+   "  .pill .arw { display: block; width: 1.3em; height: 0.8em; flex: none; }   /* the arrow, drawn bold and larger than the text */\n"],
   # cursor: the arrow only shows on an image or in the gap between images, never over the header/menu
   ["      var inWorks = !!(el && el.closest && el.closest('#works, .arrow-zone'));     // the arrow stays an arrow through the whole works section\n" \
    "      var a = !!(el && el.closest && el.closest('.shot'));             // ...and blends ('difference') over the images\n",
@@ -20,7 +20,7 @@ PATCHES = [
   # bigger footer links and project tags
   ["  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n",
    "  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n" \
-   "  .f-info { font-size: 14px; gap: 8px; }\n" \
+   "  .f-info { font-size: 13px; gap: 7px; }\n" \
    "  .work .tags, .g .meta .tags, body .more .work .tags { font-size: 12px; gap: 0 12px; margin-top: 4px; }\n"],
   ["    function check() {\n",
    "    var headerBar = document.querySelector('header');\n" \
@@ -37,7 +37,7 @@ PATCHES = [
    "    }\n" \
    "    function check() {\n"],
 ]
-ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
+ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
 def arrows(s) s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG) end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
