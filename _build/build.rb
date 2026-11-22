@@ -8,7 +8,7 @@ PATCHES = [
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
-   "  .pill .arw { display: block; width: 1.9em; height: 1.1em; flex: none; }   /* the arrow, drawn bold and larger than the text */\n"],
+   "  .pill .arw { display: block; width: 1.6em; height: 0.95em; flex: none; }   /* the arrow, drawn bold and larger than the text */\n"],
   # cursor: the arrow only shows on an image or in the gap between images, never over the header/menu
   ["      var inWorks = !!(el && el.closest && el.closest('#works, .arrow-zone'));     // the arrow stays an arrow through the whole works section\n" \
    "      var a = !!(el && el.closest && el.closest('.shot'));             // ...and blends ('difference') over the images\n",
@@ -20,8 +20,8 @@ PATCHES = [
   # bigger footer links and project tags
   ["  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n",
    "  .f-info a:hover { text-decoration: underline; text-underline-offset: 3px; }\n" \
-   "  .f-info { font-size: 16px; gap: 10px; }\n" \
-   "  .work .tags, .g .meta .tags, .more .work .tags { font-size: 15px; gap: 0 14px; margin-top: 5px; }\n"],
+   "  .f-info { font-size: 14px; gap: 8px; }\n" \
+   "  .work .tags, .g .meta .tags, body .more .work .tags { font-size: 12px; gap: 0 12px; margin-top: 4px; }\n"],
   ["    function check() {\n",
    "    var headerBar = document.querySelector('header');\n" \
    "    var worksLine = document.querySelector('#works > .whead');\n" \
