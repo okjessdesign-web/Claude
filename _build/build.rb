@@ -38,7 +38,11 @@ PATCHES = [
    "    function check() {\n"],
 ]
 ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
-def arrows(s) s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG) end
+MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
+def arrows(s)
+  s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
+   .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
+end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
 end
@@ -259,3 +263,95 @@ ORDER.each do |slug|
   File.write(File.join(SITE, "#{slug}.html"), arrows(html))
   puts "#{slug}.html  #{html.bytesize / 1024} KB"
 end
+
+# ===== Agency + Client Work: one page of floating tiles (not clickable). Hover enlarges a tile and shows its title + description =====
+# [left %, top vw, width vw, aspect ratio (w/h), title, description]   Swap the placeholder text, and set a picture with --img in the style when ready.
+LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+TILES = [
+  [ 6,   4, 22, 4.0/5, 'Project One'],
+  [40,  14, 16, 1.0,   'Project Two'],
+  [66,   2, 26, 3.0/2, 'Project Three'],
+  [62,  34, 14, 3.0/4, 'Project Four'],
+  [14,  44, 30, 16.0/9,'Project Five'],
+  [48,  58, 20, 1.0,   'Project Six'],
+  [78,  62, 16, 4.0/5, 'Project Seven'],
+  [ 4,  78, 18, 3.0/4, 'Project Eight'],
+  [32,  86, 24, 4.0/3, 'Project Nine'],
+  [64,  94, 28, 3.0/2, 'Project Ten'],
+  [12, 114, 20, 1.0,   'Project Eleven'],
+  [44, 120, 14, 4.0/5, 'Project Twelve'],
+  [68, 128, 22, 4.0/3, 'Project Thirteen'],
+]
+TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
+field_h = TILES.map { |l, t, w, ar| t + w / ar }.max + 12
+
+ACW_CSS = <<CSS
+
+  /* ===== Agency + Client Work: floating tiles ===== */
+  .field { position: relative; height: #{format('%.1f', field_h)}vw; margin: 4vw 0 8vw; }
+  .ft { position: absolute; left: var(--l); top: var(--t); width: var(--w); z-index: 1;
+        animation: drift var(--dur) ease-in-out var(--del) infinite alternate; transition: opacity .5s ease; }
+  .ft:hover { z-index: 5; animation-play-state: paused; }
+  .ft .pic { aspect-ratio: var(--ar); background: var(--tone) center / cover no-repeat; display: grid; place-items: center;
+             transform-origin: var(--ox) 50%; transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
+  .ft .pic > span { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: rgba(0, 0, 0, .4); }
+  .ft:hover .pic { transform: scale(1.45); }
+  .ft .cap { position: absolute; left: calc(var(--w) * var(--cx)); top: calc(100% + var(--h) * .225 * var(--cy) + 14px); width: max(calc(var(--w) * 1.45), 260px);
+             opacity: 0; transform: translateY(-6px); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); pointer-events: none;
+             background: var(--bg); padding: 6px 0; }
+  .ft:hover .cap { opacity: 1; transform: none; transition-delay: .15s; }
+  .ft .cap b { display: block; font-family: var(--label); font-weight: 500; text-transform: uppercase; font-size: 14px; color: var(--ink); }
+  .ft .cap p { margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--fg); }
+  .field:has(.ft:hover) .ft:not(:hover) { opacity: .35; }
+  @keyframes drift { from { translate: 0 0; } to { translate: var(--dx) var(--dy); } }
+  @media (prefers-reduced-motion: reduce) { .ft { animation: none; } }
+  @media (max-width: 760px) {
+    .field { height: auto; display: flex; flex-direction: column; gap: 48px; padding: 0 var(--pad); }
+    .ft { position: relative; left: auto; top: auto; width: 72%; animation: none; }
+    .ft:nth-child(even) { align-self: flex-end; width: 58%; }
+    .ft:hover .pic { transform: none; }
+    .ft .cap { position: static; opacity: 1; transform: none; width: auto; margin-top: 10px; }
+  }
+CSS
+
+tiles = TILES.each_with_index.map do |(l, t, w, ar, title, desc), i|
+  right = l + w / 2 > 50                                       # captions on right-hand tiles line up with the tile's right edge
+  ox = l < 12 ? '0%' : (l + w > 88 ? '100%' : '50%')           # tiles near an edge grow inward so they stay on screen
+  style = format('--l:%d%%; --t:%gvw; --w:%gvw; --h:%.2fvw; --ar:%.3f; --tone:%s; --ox:%s; --cx:%s; --cy:1; --dur:%ds; --del:-%ds; --dx:%dpx; --dy:%dpx',
+                 l, t, w, w / ar, ar, TONES[i % 4], ox, {"0%" => "0", "50%" => "-.225", "100%" => "-.45"}[ox], 6 + (i * 7) % 5, (i * 3) % 7, [-8, 6, -5, 9][i % 4], [-14, 12, -10, 16][(i + 1) % 4])
+  <<~H.chomp
+        <div class="ft#{right ? ' r' : ''}" style="#{style}">
+          <div class="pic"><span>Image</span></div>
+          <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM)}</p></div>
+        </div>
+  H
+end.join("\n")
+
+acw_title = 'Agency + Client Work | Okjess'
+acw_head = head.sub(%r{<title>.*?</title>}, "<title>#{esc(acw_title)}</title>")
+               .sub(/(<meta property="og:title" content=")[^"]*/, "\\1#{esc(acw_title)}")
+acw = <<~HTML
+  #{acw_head.rstrip}
+  #{EXTRA_CSS.rstrip}
+  #{ACW_CSS.rstrip}
+  </style>
+  </head>
+  <body>
+
+  #{header}
+
+  <main id="top">
+    <section class="hero">
+      #{wordmark('Agency + Client Work')}
+    </section>
+
+    <!-- Floating tiles: positions and sizes are set in TILES in _build/build.rb -->
+    <div class="field">
+  #{tiles}
+    </div>
+  </main>
+
+  #{tail}
+HTML
+File.write(File.join(SITE, 'agency-client-work.html'), arrows(acw))
+puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
