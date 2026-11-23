@@ -461,17 +461,14 @@ TILES = [
   # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description]
   [ 4,   4, 35, 'powerade-tent.jpg',          1544, 1057, 'Powerade Power Water'],
   [58,   0, 21, 'powerade-sign.jpg',           740,  720, 'Powerade Power Water'],
-  [40,  34, 15, 'welchs-grape.jpg',            580,  870, "Welch's Real PB&Js"],
-  [74,  30, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
-  [ 9,  40, 15, 'welchs-strawberry.jpg',       580,  870, "Welch's Real PB&Js"],
+  [75,  26, 23, 'cutwater-wristbands.jpg',     1564, 1134, 'Cutwater'],
   [30,  64, 32, 'tresemme.jpg',               2000, 1127, 'TRESemmé'],
   [70,  60, 24, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.'],
-  [ 4,  88, 31, 'liquid-iv-headliner.jpg',    2000, 1125, 'Liquid I.V.'],
   [44,  92, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.'],
   [80,  90, 16, 'good-company-halloween.jpg',  920, 1654, 'Good Company Productions'],
-  [ 8, 116, 23, 'saturn-character-sides.jpg',      1600, 1566, 'SATurn'],
+  [ 6,  90, 24, 'saturn-character-sides.jpg',      1600, 1566, 'SATurn'],
   [40, 122, 23, 'saturn-character-top-bottom.jpg', 1600, 1566, 'SATurn'],
-  [72, 126, 26, 'cutwater-wristbands.jpg',     1564, 1134, 'Cutwater'],
+  [41,  34, 16, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
