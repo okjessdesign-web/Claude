@@ -322,6 +322,21 @@ def rows(list, ind = '    ')
   out.join("\n")
 end
 
+# The four pictures: a 2 x 2 grid. Each pair sits at one height, both pictures uncropped.
+def grid4(list, ind = '    ')
+  list.each_slice(2).map do |a, b|
+    x, y = img(*a), img(*b)
+    "#{ind}<div class=\"g nat\">\n#{ind}  #{shot_nat(x)}\n#{ind}  #{shot_nat(y)}\n#{ind}</div>"
+  end.join("\n")
+end
+# The last two pictures: each gets its own full-width row at its own shape (a squarer one is capped at one screen tall)
+def singles(list, ind = '    ')
+  list.map do |a|
+    i = img(*a)
+    "#{ind}<div class=\"g one#{i[:r] > LANDSCAPE ? '' : ' solo'}\">\n#{ind}  #{shot_nat(i)}\n#{ind}</div>"
+  end.join("\n")
+end
+
 def strip(list)
   ims = list.map { |a| img(*a, 1200) }
   width = ims.sum { |i| 32 * i[:r] + 1 }            # in vw, at the strip's height
@@ -384,7 +399,7 @@ ORDER.each do |slug|
 
       <!-- Big pictures: two across, both cropped to the same shape so they line up -->
       <div class="arrow-zone prow">
-    #{rows(p[:four])}
+    #{grid4(p[:four])}
 
         <div class="ident" data-reveal>
           <div class="lab fade">#{p[:lab2]}</div>
@@ -393,7 +408,7 @@ ORDER.each do |slug|
           </div>
         </div>
 
-    #{rows(p[:two])}
+    #{singles(p[:two])}
 
         <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>
         <div class="g more">
