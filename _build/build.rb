@@ -435,22 +435,19 @@ end
 # [left %, top vw, width vw, aspect ratio (w/h), title, description]   Swap the placeholder text, and set a picture with --img in the style when ready.
 LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 TILES = [
-  [ 6,   4, 22, 4.0/5, 'Project One'],
-  [40,  14, 16, 1.0,   'Project Two'],
-  [66,   2, 26, 3.0/2, 'Project Three'],
-  [62,  34, 14, 3.0/4, 'Project Four'],
-  [14,  44, 30, 16.0/9,'Project Five'],
-  [48,  58, 20, 1.0,   'Project Six'],
-  [78,  62, 16, 4.0/5, 'Project Seven'],
-  [ 4,  78, 18, 3.0/4, 'Project Eight'],
-  [32,  86, 24, 4.0/3, 'Project Nine'],
-  [64,  94, 28, 3.0/2, 'Project Ten'],
-  [12, 114, 20, 1.0,   'Project Eleven'],
-  [44, 120, 14, 4.0/5, 'Project Twelve'],
-  [68, 128, 22, 4.0/3, 'Project Thirteen'],
-]
+  # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description]
+  [ 5,   4, 30, 'powerade-tent.jpg',          2000, 1120, 'Powerade Power Water'],
+  [62,   2, 19, 'powerade-sign.jpg',          1104,  812, 'Powerade Power Water'],
+  [41,  24, 13, 'welchs-grape.jpg',            580,  870, "Welch's Real PB&Js"],
+  [73,  34, 13, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
+  [ 9,  44, 13, 'welchs-strawberry.jpg',       580,  870, "Welch's Real PB&Js"],
+  [31,  60, 28, 'tresemme.jpg',               2000, 1127, 'TRESemmé'],
+  [69,  78, 23, 'liquid-iv-kiosk.jpg',        2000, 1333, 'Liquid I.V.'],
+  [ 5,  90, 27, 'liquid-iv-headliner.jpg',    2000, 1125, 'Liquid I.V.'],
+  [39, 106, 26, 'liquid-iv-booth-render.jpg', 2000, 1124, 'Liquid I.V.'],
+  [70, 120, 23, 'liquid-iv-booth.jpg',        2000, 1337, 'Liquid I.V.'],]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
-field_h = TILES.map { |l, t, w, ar| t + w / ar }.max + 12
+field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
 
 ACW_CSS = <<CSS
 
@@ -481,14 +478,15 @@ ACW_CSS = <<CSS
   }
 CSS
 
-tiles = TILES.each_with_index.map do |(l, t, w, ar, title, desc), i|
+tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc), i|
+  ar = pw.to_f / ph
   right = l + w / 2 > 50                                       # captions on right-hand tiles line up with the tile's right edge
   ox = l < 12 ? '0%' : (l + w > 88 ? '100%' : '50%')           # tiles near an edge grow inward so they stay on screen
   style = format('--l:%d%%; --t:%gvw; --w:%gvw; --h:%.2fvw; --ar:%.3f; --tone:%s; --ox:%s; --cx:%s; --cy:1; --dur:%ds; --del:-%ds; --dx:%dpx; --dy:%dpx',
                  l, t, w, w / ar, ar, TONES[i % 4], ox, {"0%" => "0", "50%" => "-.225", "100%" => "-.45"}[ox], 6 + (i * 7) % 5, (i * 3) % 7, [-8, 6, -5, 9][i % 4], [-14, 12, -10, 16][(i + 1) % 4])
   <<~H.chomp
         <div class="ft#{right ? ' r' : ''}" style="#{style}">
-          <div class="pic"><span>Image</span></div>
+          <div class="pic" style="background-image:url('images/agency/#{pic}')" role="img" aria-label="#{esc(title)}"></div>
           <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM)}</p></div>
         </div>
   H

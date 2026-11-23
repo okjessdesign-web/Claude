@@ -332,7 +332,7 @@
   }
 
   /* ===== Agency + Client Work: floating tiles ===== */
-  .field { position: relative; transition: height .6s cubic-bezier(.2, .7, .2, 1); height: 156.5vw; margin: 4vw 0 8vw; }
+  .field { position: relative; transition: height .6s cubic-bezier(.2, .7, .2, 1); height: 147.4vw; margin: 4vw 0 8vw; }
   .ft { position: absolute; left: var(--l); top: var(--t); width: var(--w); z-index: 1;
         animation: drift var(--dur) ease-in-out var(--del) infinite alternate; transition: opacity .5s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
   .ft:hover { z-index: 5; animation-play-state: paused; }
@@ -384,57 +384,45 @@
 
   <!-- Floating tiles: positions and sizes are set in TILES in _build/build.rb -->
   <div class="field">
-<div class="ft" style="--l:6%; --t:4vw; --w:22vw; --h:27.50vw; --ar:0.800; --tone:#c4c4c4; --ox:0%; --cx:0; --cy:1; --dur:6s; --del:-0s; --dx:-8px; --dy:12px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project One</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft" style="--l:5%; --t:4vw; --w:30vw; --h:16.80vw; --ar:1.786; --tone:#c4c4c4; --ox:0%; --cx:0; --cy:1; --dur:6s; --del:-0s; --dx:-8px; --dy:12px">
+  <div class="pic" style="background-image:url('images/agency/powerade-tent.jpg')" role="img" aria-label="Powerade Power Water"></div>
+  <div class="cap"><b>Powerade Power Water</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft" style="--l:40%; --t:14vw; --w:16vw; --h:16.00vw; --ar:1.000; --tone:#bdbdbd; --ox:50%; --cx:-.225; --cy:1; --dur:8s; --del:-3s; --dx:6px; --dy:-10px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Two</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft r" style="--l:62%; --t:2vw; --w:19vw; --h:13.97vw; --ar:1.360; --tone:#bdbdbd; --ox:50%; --cx:-.225; --cy:1; --dur:8s; --del:-3s; --dx:6px; --dy:-10px">
+  <div class="pic" style="background-image:url('images/agency/powerade-sign.jpg')" role="img" aria-label="Powerade Power Water"></div>
+  <div class="cap"><b>Powerade Power Water</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft r" style="--l:66%; --t:2vw; --w:26vw; --h:17.33vw; --ar:1.500; --tone:#c9c9c9; --ox:100%; --cx:-.45; --cy:1; --dur:10s; --del:-6s; --dx:-5px; --dy:16px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Three</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft" style="--l:41%; --t:24vw; --w:13vw; --h:19.50vw; --ar:0.667; --tone:#c9c9c9; --ox:50%; --cx:-.225; --cy:1; --dur:10s; --del:-6s; --dx:-5px; --dy:16px">
+  <div class="pic" style="background-image:url('images/agency/welchs-grape.jpg')" role="img" aria-label="Welch's Real PB&amp;Js"></div>
+  <div class="cap"><b>Welch's Real PB&amp;Js</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft r" style="--l:62%; --t:34vw; --w:14vw; --h:18.67vw; --ar:0.750; --tone:#b8b8b8; --ox:50%; --cx:-.225; --cy:1; --dur:7s; --del:-2s; --dx:9px; --dy:-14px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Four</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft r" style="--l:73%; --t:34vw; --w:13vw; --h:19.50vw; --ar:0.667; --tone:#b8b8b8; --ox:50%; --cx:-.225; --cy:1; --dur:7s; --del:-2s; --dx:9px; --dy:-14px">
+  <div class="pic" style="background-image:url('images/agency/welchs-mixed-fruit.jpg')" role="img" aria-label="Welch's Real PB&amp;Js"></div>
+  <div class="cap"><b>Welch's Real PB&amp;Js</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft" style="--l:14%; --t:44vw; --w:30vw; --h:16.88vw; --ar:1.778; --tone:#c4c4c4; --ox:50%; --cx:-.225; --cy:1; --dur:9s; --del:-5s; --dx:-8px; --dy:12px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Five</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft" style="--l:9%; --t:44vw; --w:13vw; --h:19.50vw; --ar:0.667; --tone:#c4c4c4; --ox:0%; --cx:0; --cy:1; --dur:9s; --del:-5s; --dx:-8px; --dy:12px">
+  <div class="pic" style="background-image:url('images/agency/welchs-strawberry.jpg')" role="img" aria-label="Welch's Real PB&amp;Js"></div>
+  <div class="cap"><b>Welch's Real PB&amp;Js</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft r" style="--l:48%; --t:58vw; --w:20vw; --h:20.00vw; --ar:1.000; --tone:#bdbdbd; --ox:50%; --cx:-.225; --cy:1; --dur:6s; --del:-1s; --dx:6px; --dy:-10px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Six</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft" style="--l:31%; --t:60vw; --w:28vw; --h:15.78vw; --ar:1.775; --tone:#bdbdbd; --ox:50%; --cx:-.225; --cy:1; --dur:6s; --del:-1s; --dx:6px; --dy:-10px">
+  <div class="pic" style="background-image:url('images/agency/tresemme.jpg')" role="img" aria-label="TRESemmé"></div>
+  <div class="cap"><b>TRESemmé</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft r" style="--l:78%; --t:62vw; --w:16vw; --h:20.00vw; --ar:0.800; --tone:#c9c9c9; --ox:100%; --cx:-.45; --cy:1; --dur:8s; --del:-4s; --dx:-5px; --dy:16px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Seven</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft r" style="--l:69%; --t:78vw; --w:23vw; --h:15.33vw; --ar:1.500; --tone:#c9c9c9; --ox:100%; --cx:-.45; --cy:1; --dur:8s; --del:-4s; --dx:-5px; --dy:16px">
+  <div class="pic" style="background-image:url('images/agency/liquid-iv-kiosk.jpg')" role="img" aria-label="Liquid I.V."></div>
+  <div class="cap"><b>Liquid I.V.</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft" style="--l:4%; --t:78vw; --w:18vw; --h:24.00vw; --ar:0.750; --tone:#b8b8b8; --ox:0%; --cx:0; --cy:1; --dur:10s; --del:-0s; --dx:9px; --dy:-14px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Eight</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft" style="--l:5%; --t:90vw; --w:27vw; --h:15.19vw; --ar:1.778; --tone:#b8b8b8; --ox:0%; --cx:0; --cy:1; --dur:10s; --del:-0s; --dx:9px; --dy:-14px">
+  <div class="pic" style="background-image:url('images/agency/liquid-iv-headliner.jpg')" role="img" aria-label="Liquid I.V."></div>
+  <div class="cap"><b>Liquid I.V.</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft" style="--l:32%; --t:86vw; --w:24vw; --h:18.00vw; --ar:1.333; --tone:#c4c4c4; --ox:50%; --cx:-.225; --cy:1; --dur:7s; --del:-3s; --dx:-8px; --dy:12px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Nine</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft r" style="--l:39%; --t:106vw; --w:26vw; --h:14.61vw; --ar:1.779; --tone:#c4c4c4; --ox:50%; --cx:-.225; --cy:1; --dur:7s; --del:-3s; --dx:-8px; --dy:12px">
+  <div class="pic" style="background-image:url('images/agency/liquid-iv-booth-render.jpg')" role="img" aria-label="Liquid I.V."></div>
+  <div class="cap"><b>Liquid I.V.</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
-<div class="ft r" style="--l:64%; --t:94vw; --w:28vw; --h:18.67vw; --ar:1.500; --tone:#bdbdbd; --ox:100%; --cx:-.45; --cy:1; --dur:9s; --del:-6s; --dx:6px; --dy:-10px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Ten</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
-</div>
-<div class="ft" style="--l:12%; --t:114vw; --w:20vw; --h:20.00vw; --ar:1.000; --tone:#c9c9c9; --ox:50%; --cx:-.225; --cy:1; --dur:6s; --del:-2s; --dx:-5px; --dy:16px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Eleven</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
-</div>
-<div class="ft r" style="--l:44%; --t:120vw; --w:14vw; --h:17.50vw; --ar:0.800; --tone:#b8b8b8; --ox:50%; --cx:-.225; --cy:1; --dur:8s; --del:-5s; --dx:9px; --dy:-14px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Twelve</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
-</div>
-<div class="ft r" style="--l:68%; --t:128vw; --w:22vw; --h:16.50vw; --ar:1.333; --tone:#c4c4c4; --ox:100%; --cx:-.45; --cy:1; --dur:10s; --del:-1s; --dx:-8px; --dy:12px">
-  <div class="pic"><span>Image</span></div>
-  <div class="cap"><b>Project Thirteen</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+<div class="ft r" style="--l:70%; --t:120vw; --w:23vw; --h:15.38vw; --ar:1.496; --tone:#bdbdbd; --ox:100%; --cx:-.45; --cy:1; --dur:9s; --del:-6s; --dx:6px; --dy:-10px">
+  <div class="pic" style="background-image:url('images/agency/liquid-iv-booth.jpg')" role="img" aria-label="Liquid I.V."></div>
+  <div class="cap"><b>Liquid I.V.</b><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
 </div>
   </div>
   <script>
