@@ -43,13 +43,14 @@ PATCHES = [
    "    function check() {\n"],
 ]
 ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
+SPIN_JS = File.read(File.join(__dir__, 'spin.html'), encoding: 'UTF-8')   # cursor easter egg: circle the mouse and it becomes the spinning logo
 MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
 def arrows(s)
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
    .sub('<li><a href="#contact">Contact</a></li>', %(<li><a href="contact.html">Contact</a></li>\n        <li><a href="play.html">Play</a></li>))
-   .sub('</body>') { VIDEO_JS + '</body>' }   # Info taken out of the menu
+   .sub('</body>') { VIDEO_JS + SPIN_JS + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }

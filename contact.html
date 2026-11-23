@@ -826,6 +826,53 @@
   setInterval(function () { [].forEach.call(vids, go); }, 2000);   // in case the browser paused one that is on screen
 })();
 </script>
+<style>
+  /* Easter egg: circle the mouse quickly and the dot becomes the asterisk logo, spinning the same way */
+  .cursor .spinlogo { position: absolute; width: 38px; height: 38px; margin: -19px 0 0 -19px; background: var(--logo);
+      -webkit-mask: var(--star) center / contain no-repeat; mask: var(--star) center / contain no-repeat;
+      opacity: 0; transform: scale(.2) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
+  .cursor.spin .spinlogo { opacity: 1; transform: scale(1) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+  .cursor.spin .dot, .cursor.spin svg { opacity: 0; transition: opacity .2s ease; }
+  .cursor .dot { transition: background-color .2s ease, opacity .3s ease; }
+  .cursor.red .spinlogo { background: var(--bg); }
+  .cursor.diff .spinlogo { background: #fff; }
+</style>
+<script>
+(function () {
+  var cursor = document.querySelector('.cursor');
+  if (!cursor || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var logo = document.createElement('span'); logo.className = 'spinlogo'; cursor.appendChild(logo);
+  var lx = null, ly = null, la = null, hist = [], on = false, rot = 0, vel = 0, last = 0, offT = 0;
+  var TURNS_ON = 1.75, WINDOW = 1100;            // about 1.75 circles within ~1 second turns it on
+  document.addEventListener('mousemove', function (e) {
+    var t = performance.now();
+    if (lx !== null) {
+      var dx = e.clientX - lx, dy = e.clientY - ly;
+      if (dx * dx + dy * dy > 16) {             // ignore tiny jitters
+        var a = Math.atan2(dy, dx);
+        if (la !== null) { var d = a - la; d = Math.atan2(Math.sin(d), Math.cos(d)); hist.push([t, d]); }
+        la = a; lx = e.clientX; ly = e.clientY;
+      }
+    } else { lx = e.clientX; ly = e.clientY; }
+    while (hist.length && t - hist[0][0] > WINDOW) hist.shift();
+    var sum = 0; hist.forEach(function (h) { sum += h[1]; });
+    if (Math.abs(sum) > TURNS_ON * 2 * Math.PI) {
+      if (!on) { on = true; cursor.classList.add('spin'); if (!last) requestAnimationFrame(tick); }
+      vel = sum / (WINDOW / 1000);              // spin speed follows how fast you circle (radians per second)
+      offT = t + 700;                           // stays a logo while you keep circling
+    }
+  }, { passive: true });
+  function tick(now) {
+    var dt = last ? Math.min(64, now - last) / 1000 : 0; last = now;
+    if (on && now > offT) { on = false; cursor.classList.remove('spin'); }
+    if (!on) vel *= Math.pow(0.04, dt);         // eases to a stop after you let go
+    rot += vel * dt * 180 / Math.PI * 1.6;
+    logo.style.setProperty('--rot', rot.toFixed(1) + 'deg');
+    if (on || Math.abs(vel) > 0.05) requestAnimationFrame(tick); else { last = 0; vel = 0; }
+  }
+})();
+</script>
 </body>
 </html>
 
