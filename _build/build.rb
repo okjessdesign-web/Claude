@@ -53,7 +53,6 @@ TPL = patch(File.read(File.join(SITE, 'noko-blind-box_1.html')))
 # Homepage: same patches, and project links point at the local pages
 home = patch(File.read(File.join(SITE, 'index_1.html')))
   .gsub(%r{https://okjess\.com/(beyond-the-trails|solis|atelier-co|mind-motion|framed-together|collective-moments|corbeau-mocktail-lounge)"}, '\1.html"')
-File.write(File.join(SITE, 'index.html'), arrows(home))
 
 EXTRA_CSS = <<CSS
 
@@ -61,6 +60,56 @@ EXTRA_CSS = <<CSS
   .body-copy + .body-copy { margin-top: 1.1em; }   /* paragraphs that follow each other get a gap */
   h1.wmbox .ch { transition-delay: var(--d, 0ms); }   /* page titles rise as one piece, not letter by letter */
 CSS
+
+# Click a picture on a work page to see it full size. Arrow keys / side arrows move between pictures, Esc or a click closes.
+LIGHTBOX_CSS = <<CSS
+  .hero-media[style] { background-image: var(--img); }   /* the top box shows its photo */
+  .zoomable { cursor: zoom-in; }
+  .lb { position: fixed; inset: 0; z-index: 9000; background: rgba(218, 218, 218, .96); display: grid; place-items: center;
+        opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+  .lb.open { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+  .lb img { max-width: calc(100vw - 160px); max-height: calc(100vh - 120px); object-fit: contain; display: block;
+            transform: scale(.97); transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+  .lb.open img { transform: none; }
+  .lb button { position: absolute; background: none; border: 0; padding: 18px; color: var(--fg); font: inherit; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; }
+  .lb .x { top: 14px; right: 14px; }
+  .lb .pv, .lb .nx { top: 50%; transform: translateY(-50%); }
+  .lb .pv { left: 10px; } .lb .nx { right: 10px; }
+  .lb .pv svg, .lb .nx svg { width: 34px; height: 20px; display: block; }
+  .lb .pv svg { transform: scaleX(-1); }
+  .lb .n { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-size: 12px; color: var(--fg); }
+  @media (max-width: 760px) { .lb img { max-width: calc(100vw - 32px); max-height: calc(100vh - 160px); } .lb .pv, .lb .nx { top: auto; bottom: 8px; transform: none; } }
+CSS
+
+LIGHTBOX_HTML = <<~H.chomp
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Picture" aria-hidden="true">
+    <img alt="">
+    <button class="x" type="button">Close</button>
+    <button class="pv" type="button" aria-label="Previous picture">#{ARROW_SVG}</button>
+    <button class="nx" type="button" aria-label="Next picture">#{ARROW_SVG}</button>
+    <span class="n"></span>
+  </div>
+  <script>
+  (function () {
+    var lb = document.getElementById('lb'), im = lb.querySelector('img'), n = lb.querySelector('.n');
+    var shots = [].slice.call(document.querySelectorAll('main .shot')).filter(function (s) { return !s.closest('a') && (s.getAttribute('style') || '').indexOf('url(') > -1; });
+    var at = 0;
+    function src(s) { var u = s.getAttribute('style'); u = u.slice(u.indexOf('http')); u = u.slice(0, u.search(/['")]/)); return u.split('?scale-down-to=')[0] + '?scale-down-to=2048'; }
+    function show(i) { at = (i + shots.length) % shots.length; im.src = src(shots[at]); n.textContent = (at + 1) + ' / ' + shots.length; }
+    function open(i) { show(i); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('lb-on'); }
+    function close() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('lb-on'); }
+    shots.forEach(function (s, i) { s.classList.add('zoomable'); s.addEventListener('click', function () { open(i); }); });
+    lb.querySelector('.pv').addEventListener('click', function (e) { e.stopPropagation(); show(at - 1); });
+    lb.querySelector('.nx').addEventListener('click', function (e) { e.stopPropagation(); show(at + 1); });
+    lb.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') show(at - 1); else if (e.key === 'ArrowRight') show(at + 1);
+    });
+    window.addEventListener('wheel', function (e) { if (lb.classList.contains('open')) { e.stopImmediatePropagation(); e.preventDefault(); } }, { capture: true, passive: false });
+  })();
+  </script>
+H
 
 head   = TPL[/\A.*?(?=<\/style>)/m]
 header = TPL[/<header>.*?<\/header>/m]
@@ -155,6 +204,10 @@ P = {
   },
 }
 ORDER = P.keys
+LOCAL_THUMB = P.map { |slug, p| [p[:thumb], slug] }.to_h          # images/x.jpg => slug (homepage used local copies)
+P.each_value { |p| p[:thumb] = img(*p[:four][0], 1024)[:url] }    # project thumbnails now load from Framer, like the galleries
+# the photo for the big box at the top of a work page: the widest picture from that project
+def hero_img(p) img(*(p[:four] + p[:two]).max_by { |_, w, h| w.to_f / h })[:url] end
 
 def esc(s)
   s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')
@@ -218,6 +271,7 @@ ORDER.each do |slug|
   html = <<~HTML
     #{page_head.rstrip}
     #{EXTRA_CSS.rstrip}
+    #{LIGHTBOX_CSS.rstrip}
     </style>
     </head>
     <body>
@@ -229,7 +283,7 @@ ORDER.each do |slug|
       <section class="hero">
         #{wordmark(p[:title])}
         <!-- Placeholder for an image or video: replace the contents with <img src="..."> or <video src="..." autoplay muted loop playsinline></video> -->
-        <div class="hero-media shot arrow-zone"><span>Image or video</span></div>
+        <div class="hero-media shot arrow-zone" style="--img:url('#{hero_img(p)}')"></div>
       </section>
 
       <section class="intro ident" data-reveal>
@@ -259,6 +313,8 @@ ORDER.each do |slug|
         </div>
       </div>
     </main>
+
+    #{LIGHTBOX_HTML}
 
     #{tail}
   HTML
@@ -419,3 +475,8 @@ acw = <<~HTML
 HTML
 File.write(File.join(SITE, 'agency-client-work.html'), arrows(acw))
 puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
+
+# Homepage: project pictures load from Framer too (same photos as before)
+home = home.gsub(%r{images/[a-z-]+\.jpg}) { |m| LOCAL_THUMB[m] ? P[LOCAL_THUMB[m]][:thumb] : m }
+File.write(File.join(SITE, 'index.html'), arrows(home))
+puts "index.html  #{home.bytesize / 1024} KB"
