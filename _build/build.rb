@@ -581,6 +581,7 @@ puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
 
 # Homepage: project pictures load from Framer too (same photos as before)
 home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\)"></div>}) { LOCAL_THUMB[$1] ? preview_shot(LOCAL_THUMB[$1]) : $& }
-home = home.sub('<div class="row">', '<div class="row flip">')   # first row: Noko is the big picture, St. Jacobs the small one
+# first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
+home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 File.write(File.join(SITE, 'index.html'), arrows(home))
 puts "index.html  #{home.bytesize / 1024} KB"
