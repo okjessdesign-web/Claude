@@ -238,7 +238,7 @@ PREVIEW = {
   'mind-motion'             => [:img, '0sZoU4Ke1XH732egCRi9G3xR8g.jpg', 4000, 3000],
   'framed-together'         => [:img, 'ESk5wRPZ5dlmidwPPnPVawuwemE.png', 5000, 3335],
   'collective-moments'      => [:video, 'WghI96voPXWWEbDOpue8WxsqISc.mp4', 1000, 1000],
-  'corbeau-mocktail-lounge' => [:img, 'YFFD62Q74NHQHZsQT6dY7c4St2g.png', 2032, 1520],
+  'corbeau-mocktail-lounge' => [:img, 'ZEfY8l2KCGs3EGNvBQByqnGmBDo.png', 4000, 3000],   # the store sign (Jess's pick; Framer used the pomegranates)
 }
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
