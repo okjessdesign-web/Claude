@@ -60,6 +60,17 @@ EXTRA_CSS = <<CSS
   /* ===== Added for the other project pages ===== */
   .body-copy + .body-copy { margin-top: 1.1em; }   /* paragraphs that follow each other get a gap */
   h1.wmbox .ch { transition-delay: var(--d, 0ms); }   /* page titles rise as one piece, not letter by letter */
+  /* pictures and videos run to the edges of the screen (small gap kept between paired pictures) */
+  .hero-media { margin-left: 0; margin-right: 0; }
+  .g { padding-left: 0; padding-right: 0; }
+  .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
+  .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  @media (max-width: 760px) {
+    .hero-media { margin-left: 0; margin-right: 0; }
+    .g { padding-left: 0; padding-right: 0; }
+    .more .work .t, .more .work .tags { padding-left: var(--pad); }
+    .ident .lab { font-size: 16px; margin-bottom: 12px; }
+  }
 CSS
 
 # Click a picture on a work page to see it full size. Arrow keys / side arrows move between pictures, Esc or a click closes.
