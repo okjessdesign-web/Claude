@@ -31,7 +31,7 @@ PATCHES = [
    "      btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');\n"],
   ["  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n",
    "  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n" \
-   "  .nbtn.x { line-height: 0; }\n  .nbtn .xic { display: block; width: 17px; height: 17px; }   /* the close x: thin drawn lines */\n"],
+   "  .nbtn.x { line-height: 0; }\n  .nbtn .xic { display: block; width: 17px; height: 17px; transform: translateY(calc(8.5px - .35em)); }   /* the close x: thin drawn lines, centred on the capital letters of the menu */\n"],
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
