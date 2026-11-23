@@ -445,7 +445,7 @@ TILES = [
   [69,  78, 23, 'liquid-iv-kiosk.jpg',        2000, 1333, 'Liquid I.V.'],
   [ 5,  90, 27, 'liquid-iv-headliner.jpg',    2000, 1125, 'Liquid I.V.'],
   [39, 106, 26, 'liquid-iv-booth-render.jpg', 2000, 1124, 'Liquid I.V.'],
-  [70, 120, 23, 'liquid-iv-booth.jpg',        2000, 1337, 'Liquid I.V.'],]
+  [74, 114, 15, 'good-company-halloween.jpg',  920, 1654, 'Good Company Productions'],]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
 
