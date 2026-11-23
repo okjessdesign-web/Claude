@@ -314,11 +314,20 @@
   .g { padding-left: 0; padding-right: 0; }
   .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
   .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  .g.one { grid-template-columns: 1fr; }
+  .g.nat { display: flex; align-items: flex-start; }
+  .g.nat .shot { flex: var(--r) 1 0; min-width: 0; }
+  .g.one .shot, .g.nat .shot { background-size: cover; }
+  .g.solo { justify-items: center; }
+  .g.solo .shot { width: min(100%, calc(100vh * var(--r))); }   /* a squarer picture on its own: at most one screen tall */
   @media (max-width: 760px) {
     .hero-media { margin-left: 0; margin-right: 0; }
     .g { padding-left: 0; padding-right: 0; }
     .more .work .t, .more .work .tags { padding-left: var(--pad); }
     .ident .lab { font-size: 16px; margin-bottom: 12px; }
+    .g.nat { flex-direction: column; }
+    .g.nat .shot { flex: none; width: 100%; }
+    .g.solo .shot { width: 100%; }
   }
 
   /* ===== Agency + Client Work: floating tiles ===== */

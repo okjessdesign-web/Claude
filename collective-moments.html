@@ -314,11 +314,20 @@
   .g { padding-left: 0; padding-right: 0; }
   .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
   .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  .g.one { grid-template-columns: 1fr; }
+  .g.nat { display: flex; align-items: flex-start; }
+  .g.nat .shot { flex: var(--r) 1 0; min-width: 0; }
+  .g.one .shot, .g.nat .shot { background-size: cover; }
+  .g.solo { justify-items: center; }
+  .g.solo .shot { width: min(100%, calc(100vh * var(--r))); }   /* a squarer picture on its own: at most one screen tall */
   @media (max-width: 760px) {
     .hero-media { margin-left: 0; margin-right: 0; }
     .g { padding-left: 0; padding-right: 0; }
     .more .work .t, .more .work .tags { padding-left: var(--pad); }
     .ident .lab { font-size: 16px; margin-bottom: 12px; }
+    .g.nat { flex-direction: column; }
+    .g.nat .shot { flex: none; width: 100%; }
+    .g.solo .shot { width: 100%; }
   }
   .hero-media[style] { background-image: var(--img); }   /* the top box shows its photo */
   .zoomable { cursor: zoom-in; }
@@ -374,13 +383,17 @@
 
   <!-- Big pictures: two across, both cropped to the same shape so they line up -->
   <div class="arrow-zone prow">
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/Ay4TyzhHZJuTPuc8rs5uoXIsA.png?scale-down-to=2048'); aspect-ratio:1.028"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/gIWj5KOxO2HmG4lUTJikEI.png'); aspect-ratio:1.028"></div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/Ay4TyzhHZJuTPuc8rs5uoXIsA.png?scale-down-to=2048'); aspect-ratio:1.333; --r:1.333"></div>
     </div>
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/D9x29X7ls4JDwvl0UiwOjWotWEY.jpg?scale-down-to=2048'); aspect-ratio:1.324"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/LtpGSFxHvmYRAmp3GytcTAXONsQ.png'); aspect-ratio:1.324"></div>
+    <div class="g one solo">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/gIWj5KOxO2HmG4lUTJikEI.png'); aspect-ratio:0.793; --r:0.793"></div>
+    </div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/D9x29X7ls4JDwvl0UiwOjWotWEY.jpg?scale-down-to=2048'); aspect-ratio:1.447; --r:1.447"></div>
+    </div>
+    <div class="g one solo">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/LtpGSFxHvmYRAmp3GytcTAXONsQ.png'); aspect-ratio:1.211; --r:1.211"></div>
     </div>
 
     <div class="ident" data-reveal>
@@ -390,9 +403,11 @@
       </div>
     </div>
 
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/nkzeqA9d1wNhqYAZrPoLls7xNo.png?scale-down-to=2048'); aspect-ratio:1.272"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/pjt0nLXiuBuprTngSwpXqG5gM.png?scale-down-to=2048'); aspect-ratio:1.272"></div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/nkzeqA9d1wNhqYAZrPoLls7xNo.png?scale-down-to=2048'); aspect-ratio:1.333; --r:1.333"></div>
+    </div>
+    <div class="g one solo">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/pjt0nLXiuBuprTngSwpXqG5gM.png?scale-down-to=2048'); aspect-ratio:1.214; --r:1.214"></div>
     </div>
 
     <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>

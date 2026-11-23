@@ -314,11 +314,20 @@
   .g { padding-left: 0; padding-right: 0; }
   .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
   .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  .g.one { grid-template-columns: 1fr; }
+  .g.nat { display: flex; align-items: flex-start; }
+  .g.nat .shot { flex: var(--r) 1 0; min-width: 0; }
+  .g.one .shot, .g.nat .shot { background-size: cover; }
+  .g.solo { justify-items: center; }
+  .g.solo .shot { width: min(100%, calc(100vh * var(--r))); }   /* a squarer picture on its own: at most one screen tall */
   @media (max-width: 760px) {
     .hero-media { margin-left: 0; margin-right: 0; }
     .g { padding-left: 0; padding-right: 0; }
     .more .work .t, .more .work .tags { padding-left: var(--pad); }
     .ident .lab { font-size: 16px; margin-bottom: 12px; }
+    .g.nat { flex-direction: column; }
+    .g.nat .shot { flex: none; width: 100%; }
+    .g.solo .shot { width: 100%; }
   }
   .hero-media[style] { background-image: var(--img); }   /* the top box shows its photo */
   .zoomable { cursor: zoom-in; }
@@ -361,7 +370,7 @@
   <section class="hero">
     <h1 class="wmbox" aria-label="St. Jacobs Antiques Market"><span class="wm" aria-hidden="true"><span class="ch">S</span><span class="ch">t</span><span class="ch">.</span><span class="ch">&nbsp;</span><span class="ch">J</span><span class="ch">a</span><span class="ch">c</span><span class="ch">o</span><span class="ch">b</span><span class="ch">s</span><span class="ch">&nbsp;</span><span class="ch">A</span><span class="ch">n</span><span class="ch">t</span><span class="ch">i</span><span class="ch">q</span><span class="ch">u</span><span class="ch">e</span><span class="ch">s</span><span class="ch">&nbsp;</span><span class="ch">M</span><span class="ch">a</span><span class="ch">r</span><span class="ch">k</span><span class="ch">e</span><span class="ch">t</span><i class="bl"></i></span></h1>
     <!-- Placeholder for an image or video: replace the contents with <img src="..."> or <video src="..." autoplay muted loop playsinline></video> -->
-    <div class="hero-media shot arrow-zone" style="--img:url('https://framerusercontent.com/images/DZmC0t4OYP21Zn4DN8l0dzW8.jpg?scale-down-to=2048')"></div>
+    <div class="hero-media shot arrow-zone" style="--img:url('https://framerusercontent.com/images/DZmC0t4OYP21Zn4DN8l0dzW8.jpg?scale-down-to=2048'); aspect-ratio:1.500; height:auto"></div>
   </section>
 
   <section class="intro ident" data-reveal>
@@ -374,13 +383,17 @@
 
   <!-- Big pictures: two across, both cropped to the same shape so they line up -->
   <div class="arrow-zone prow">
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/2IeBml8NLuZLpEXWqPm5Bohs.jpg?scale-down-to=2048'); aspect-ratio:1.155"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/4MISSi7GskVUY1B09sI2AgbCLg.jpg?scale-down-to=2048'); aspect-ratio:1.155"></div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/2IeBml8NLuZLpEXWqPm5Bohs.jpg?scale-down-to=2048'); aspect-ratio:1.333; --r:1.333"></div>
     </div>
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/DDkUl6kRrayUWHmO3xDbfNmdFnY.png?scale-down-to=2048'); aspect-ratio:1.333"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/Bna8O8q7j995EUAmSjo1JeZ3tbY.jpg?scale-down-to=2048'); aspect-ratio:1.333"></div>
+    <div class="g one solo">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/4MISSi7GskVUY1B09sI2AgbCLg.jpg?scale-down-to=2048'); aspect-ratio:1.000; --r:1.000"></div>
+    </div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/DDkUl6kRrayUWHmO3xDbfNmdFnY.png?scale-down-to=2048'); aspect-ratio:1.333; --r:1.333"></div>
+    </div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/Bna8O8q7j995EUAmSjo1JeZ3tbY.jpg?scale-down-to=2048'); aspect-ratio:1.333; --r:1.333"></div>
     </div>
 
     <div class="ident" data-reveal>
@@ -390,9 +403,11 @@
       </div>
     </div>
 
-    <div class="g two">
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/ugTk4wfaEe8cGEmCP9GTwx4Tv8.jpg?scale-down-to=2048'); aspect-ratio:1.515"></div>
-      <div class="shot" style="--img:url('https://framerusercontent.com/images/l5koY4IX1v4JmjrOQD41Sv7Fst4.jpg?scale-down-to=2048'); aspect-ratio:1.515"></div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/ugTk4wfaEe8cGEmCP9GTwx4Tv8.jpg?scale-down-to=2048'); aspect-ratio:1.778; --r:1.778"></div>
+    </div>
+    <div class="g one">
+      <div class="shot" style="--img:url('https://framerusercontent.com/images/l5koY4IX1v4JmjrOQD41Sv7Fst4.jpg?scale-down-to=2048'); aspect-ratio:1.292; --r:1.292"></div>
     </div>
 
     <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>

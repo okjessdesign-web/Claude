@@ -65,11 +65,20 @@ EXTRA_CSS = <<CSS
   .g { padding-left: 0; padding-right: 0; }
   .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
   .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  .g.one { grid-template-columns: 1fr; }
+  .g.nat { display: flex; align-items: flex-start; }
+  .g.nat .shot { flex: var(--r) 1 0; min-width: 0; }
+  .g.one .shot, .g.nat .shot { background-size: cover; }
+  .g.solo { justify-items: center; }
+  .g.solo .shot { width: min(100%, calc(100vh * var(--r))); }   /* a squarer picture on its own: at most one screen tall */
   @media (max-width: 760px) {
     .hero-media { margin-left: 0; margin-right: 0; }
     .g { padding-left: 0; padding-right: 0; }
     .more .work .t, .more .work .tags { padding-left: var(--pad); }
     .ident .lab { font-size: 16px; margin-bottom: 12px; }
+    .g.nat { flex-direction: column; }
+    .g.nat .shot { flex: none; width: 100%; }
+    .g.solo .shot { width: 100%; }
   }
 CSS
 
@@ -222,23 +231,25 @@ P.each_value { |p| p[:thumb] = img(*p[:four][0], 1024)[:url] }    # project thum
 # The preview Framer shows for each project on the homepage (3 are videos). Used on the homepage, in "More works" and at the top of work pages.
 ASSETS = 'https://framerusercontent.com/assets/'
 PREVIEW = {
-  'noko-blind-box'          => [:video, 'Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4'],
+  'noko-blind-box'          => [:video, 'Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4', 1920, 1080],
   'beyond-the-trails'       => [:img, 'DZmC0t4OYP21Zn4DN8l0dzW8.jpg', 3000, 2000],
-  'solis'                   => [:video, 'mvYza2nC32CUGuQwNNQlFFz6rk.mp4'],
+  'solis'                   => [:video, 'mvYza2nC32CUGuQwNNQlFFz6rk.mp4', 1920, 1080],
   'atelier-co'              => [:img, 'znXA7V9IoNEE2ITK3fjLTN8prs.png', 1497, 1089],
   'mind-motion'             => [:img, '0sZoU4Ke1XH732egCRi9G3xR8g.jpg', 4000, 3000],
   'framed-together'         => [:img, 'ESk5wRPZ5dlmidwPPnPVawuwemE.png', 5000, 3335],
-  'collective-moments'      => [:video, 'WghI96voPXWWEbDOpue8WxsqISc.mp4'],
+  'collective-moments'      => [:video, 'WghI96voPXWWEbDOpue8WxsqISc.mp4', 1000, 1000],
   'corbeau-mocktail-lounge' => [:img, 'YFFD62Q74NHQHZsQT6dY7c4St2g.png', 2032, 1520],
 }
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
 def preview_shot(slug, cls = 'shot', max = 1024)
   kind, id, w, h = PREVIEW[slug]
+  r = w.to_f / h
+  shape = cls.include?('hero-media') && r > LANDSCAPE ? "; aspect-ratio:#{format('%.3f', r)}; height:auto" : ''   # landscape top picture: its own shape, not cropped
   if kind == :video
-    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')">#{video_tag(id)}</div>)
+    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}</div>)
   else
-    %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')"></div>)
+    %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')#{shape}"></div>)
   end
 end
 
@@ -287,6 +298,28 @@ def pair(a, b, ind = '    ')
   ar = format('%.3f', Math.sqrt(x[:r] * y[:r]))
   [x, y].map { |i| %(#{ind}  <div class="shot" style="--img:url('#{i[:url]}'); aspect-ratio:#{ar}"></div>) }
     .then { |s| "#{ind}<div class=\"g two\">\n#{s.join("\n")}\n#{ind}</div>" }
+end
+
+# Gallery rows, in the Framer order. A landscape picture (wider than 1.25:1) gets a full-width row at its own shape.
+# Other pictures go two to a row, sized so both show uncropped at the same height; a leftover one gets its own row.
+LANDSCAPE = 1.25
+def shot_nat(i) %(<div class="shot" style="--img:url('#{i[:url]}'); aspect-ratio:#{format('%.3f', i[:r])}; --r:#{format('%.3f', i[:r])}"></div>) end
+def rows(list, ind = '    ')
+  out, buf = [], []
+  flush = lambda do
+    if buf.size == 2 then out << "#{ind}<div class=\"g nat\">\n#{ind}  #{shot_nat(buf[0])}\n#{ind}  #{shot_nat(buf[1])}\n#{ind}</div>"
+    elsif buf.size == 1 then out << "#{ind}<div class=\"g one#{buf[0][:r] > LANDSCAPE ? '' : ' solo'}\">\n#{ind}  #{shot_nat(buf[0])}\n#{ind}</div>"
+    end
+    buf.clear
+  end
+  list.each do |a|
+    i = img(*a)
+    if i[:r] > LANDSCAPE then flush.call; buf << i; flush.call
+    else buf << i; flush.call if buf.size == 2
+    end
+  end
+  flush.call
+  out.join("\n")
 end
 
 def strip(list)
@@ -351,8 +384,7 @@ ORDER.each do |slug|
 
       <!-- Big pictures: two across, both cropped to the same shape so they line up -->
       <div class="arrow-zone prow">
-    #{pair(p[:four][0], p[:four][1])}
-    #{pair(p[:four][2], p[:four][3])}
+    #{rows(p[:four])}
 
         <div class="ident" data-reveal>
           <div class="lab fade">#{p[:lab2]}</div>
@@ -361,7 +393,7 @@ ORDER.each do |slug|
           </div>
         </div>
 
-    #{pair(p[:two][0], p[:two][1])}
+    #{rows(p[:two])}
 
         <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>
         <div class="g more">
