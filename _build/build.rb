@@ -5,6 +5,11 @@ CDN  = 'https://framerusercontent.com/images/'
 
 # Changes applied to both the homepage and the project-page template (shared CSS and scripts)
 PATCHES = [
+  ["      btn.textContent = open ? 'Close' : 'Menu';\n",
+   "      btn.textContent = open ? '×' : 'Menu'; btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');\n"],
+  ["  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n",
+   "  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n" \
+   "  .nbtn.x { font-size: 2em; line-height: .5; font-weight: 400; }   /* the close x */\n"],
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
@@ -43,6 +48,7 @@ def arrows(s)
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
+   .sub('<li><a href="#contact">Contact</a></li>', %(<li><a href="contact.html">Contact</a></li>\n        <li><a href="play.html">Play</a></li>))
    .sub('</body>') { VIDEO_JS + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
@@ -620,3 +626,196 @@ end
 home = swap_works(home, 'beyond-the-trails', 'atelier-co')
 File.write(File.join(SITE, 'index.html'), arrows(home))
 puts "index.html  #{home.bytesize / 1024} KB"
+
+# ===== Contact, Play and 404 pages =====
+PAGE_HEAD, PAGE_TAIL = head, tail
+def page_head(title)
+  PAGE_HEAD.sub(%r{<title>.*?</title>}, "<title>#{esc(title)}</title>").sub(/(<meta property="og:title" content=")[^"]*/, "\\1#{esc(title)}")
+end
+# the footer, with the big name swapped for another word (data-w: share of the screen width it spans)
+def tail_with_word(word, wide = '1', keep_mid = false)
+  t = PAGE_TAIL.sub(%r{<div class="wmbox" data-w="0\.5" data-pad aria-hidden="true"><span class="wm">.*?<i class="bl"></i></span></div>}m) do
+    chars = word.chars.map { |c| %(<span class="ch">#{c == ' ' ? '&nbsp;' : esc(c)}</span>) }.join
+    %(<div class="wmbox" data-w="#{wide}" aria-hidden="true"><span class="wm">#{chars}<i class="bl"></i></span></div>)
+  end
+  t = t.sub(%r{  <div class="f-mid">.*?\n  </div>\n(?=    <div class="wmbox")}m, '') unless keep_mid
+  t
+end
+
+# --- Contact ---
+CONTACT_CSS = <<CSS
+
+  /* ===== Contact page ===== */
+  body.contact-page { min-height: 100vh; display: flex; flex-direction: column; }
+  body.contact-page main { flex: 1; }
+  .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 22vh 1vw 10vh 1.95vw; align-items: start; }
+  .ct h2 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.015em; line-height: 1.1; color: var(--fg); max-width: 15em; text-wrap: balance; }
+  .ct-mail { display: inline-block; margin-top: 22px; font-size: 12px; text-transform: uppercase; color: var(--fg); }
+  .ct-mail:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 2vw; max-width: 900px; }
+  .ct-form label { display: block; }
+  .ct-form label.full { grid-column: 1 / -1; }
+  .ct-form .lab { display: block; font-family: var(--label); font-weight: 500; font-size: 12px; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); margin-bottom: 10px; }
+  .ct-form input, .ct-form textarea { width: 100%; border: 0; border-bottom: var(--hair); background: transparent; border-radius: 0; padding: 6px 0 10px;
+      font-family: var(--mono); font-weight: 500; font-size: 14px; color: var(--fg); outline: none; resize: none; }
+  .ct-form textarea { min-height: 7.5em; line-height: 1.5; }
+  .ct-form input::placeholder, .ct-form textarea::placeholder { color: var(--fg); opacity: .45; text-transform: uppercase; }
+  .ct-form input:focus, .ct-form textarea:focus { border-bottom-color: var(--ink); }
+  .ct-form .pill { margin-top: 0; cursor: pointer; background: none; font: inherit; color: var(--fg); justify-self: start; }
+  /* the thank-you moment: the page flips to red, says thank you, then eases back */
+  .ty { position: fixed; inset: 0; z-index: 9000; background: var(--fg); color: var(--bg); display: grid; place-items: center; text-align: center; padding: 0 var(--pad);
+        clip-path: inset(100% 0 0 0); visibility: hidden; transition: clip-path 1s cubic-bezier(.76, 0, .24, 1), visibility 0s 1s; }
+  .ty.show { clip-path: inset(0 0 0 0); visibility: visible; transition: clip-path 1s cubic-bezier(.76, 0, .24, 1); }
+  .ty.leave { clip-path: inset(0 0 100% 0); visibility: visible; }
+  .ty p { font-family: var(--display); font-weight: 500; font-size: clamp(28px, 4vw, 64px); letter-spacing: -0.02em; line-height: 1.08; max-width: 14em;
+          opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
+  .ty p small { display: block; margin-top: 18px; font-family: var(--mono); font-size: 12px; letter-spacing: .02em; text-transform: uppercase; }
+  .ty.show p { opacity: 1; transform: none; transition-delay: .45s; }
+  html.ty-on .cursor .dot { background: var(--bg) !important; }
+  @media (max-width: 760px) {
+    .ct { grid-template-columns: 1fr; padding: 16vh var(--pad) 8vh; gap: 48px; }
+    .ct-form { grid-template-columns: 1fr; gap: 28px; }
+  }
+CSS
+
+CONTACT_JS = <<'JS'
+<script>
+// Contact form: for now nothing is sent (placeholder). On submit the page flips to red with a thank-you, then eases back.
+(function () {
+  var form = document.getElementById('ct-form'), ty = document.getElementById('ty'), root = document.documentElement;
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    root.classList.add('ty-on');
+    ty.classList.remove('leave'); ty.classList.add('show'); ty.setAttribute('aria-hidden', 'false');
+    setTimeout(function () {
+      ty.classList.add('leave'); ty.classList.remove('show');          // wipe away upward
+      form.reset();
+      setTimeout(function () { ty.classList.remove('leave'); ty.setAttribute('aria-hidden', 'true'); root.classList.remove('ty-on'); }, 1000);
+    }, 3200);
+  });
+})();
+</script>
+JS
+
+contact = <<~HTML
+  #{page_head('Contact | Okjess').rstrip}
+  #{EXTRA_CSS.rstrip}
+  #{CONTACT_CSS.rstrip}
+  </style>
+  </head>
+  <body class="contact-page">
+
+  #{header}
+
+  <main id="top">
+    <section class="ct">
+      <div>
+        <h2>Let&rsquo;s stay in touch and create amazing things&nbsp;together.</h2>
+        <a class="ct-mail" href="mailto:okjessdesign@gmail.com">okjessdesign@gmail.com</a>
+      </div>
+      <!-- Placeholder form: it does not send anything yet. Hook it up to a form service (e.g. Formspree) when ready. -->
+      <form class="ct-form" id="ct-form">
+        <label><span class="lab">Name</span><input name="name" type="text" autocomplete="name" required placeholder="Your name"></label>
+        <label><span class="lab">Email</span><input name="email" type="email" autocomplete="email" required placeholder="you@email.com"></label>
+        <label class="full"><span class="lab">Message</span><textarea name="message" rows="5" required placeholder="Tell me about your project"></textarea></label>
+        <button class="pill" type="submit"><span>Send</span><span aria-hidden="true">&rarr;</span></button>
+      </form>
+    </section>
+  </main>
+
+  <div class="ty" id="ty" role="status" aria-live="polite" aria-hidden="true">
+    <p>Thank you for reaching out. I&rsquo;ll be in touch&nbsp;shortly.<small>Jessica Baker</small></p>
+  </div>
+
+  #{tail_with_word('Contact').sub('</body>') { CONTACT_JS + '</body>' }}
+HTML
+File.write(File.join(SITE, 'contact.html'), arrows(contact))
+puts "contact.html  #{contact.bytesize / 1024} KB"
+
+# --- Play (placeholder until there is content) ---
+play = <<~HTML
+  #{page_head('Play | Okjess').rstrip}
+  #{EXTRA_CSS.rstrip}
+  </style>
+  </head>
+  <body>
+
+  #{header}
+
+  <main id="top">
+    <section class="hero">
+      #{wordmark('Play')}
+    </section>
+    <!-- Play: content to come -->
+  </main>
+
+  #{tail}
+HTML
+File.write(File.join(SITE, 'play.html'), arrows(play))
+puts "play.html  #{play.bytesize / 1024} KB"
+
+# --- 404: "404" drawn with little project pictures, "Oh no!" underneath ---
+GLYPHS = {
+  '4' => ['X...X', 'X...X', 'X...X', 'XXXXX', '....X', '....X', '....X'],
+  '0' => ['.XXX.', 'X...X', 'X...X', 'X...X', 'X...X', 'X...X', '.XXX.'],
+}
+pics = ORDER.flat_map { |s| (P[s][:four] + P[s][:two]).map { |a| img(*a, 512)[:url] } }
+pics = pics.each_with_index.sort_by { |_, i| (i * 37) % pics.size }.map(&:first)   # mixed up, but the same every build
+n = -1
+glyphs = '404'.chars.map do |ch|
+  cells = GLYPHS[ch].join.chars.map do |c|
+    if c == 'X'
+      n += 1
+      %(<i class="px" style="--img:url('#{pics[n % pics.size]}'); --d:#{(n * 37) % 600}ms"></i>)
+    else
+      '<i class="px off"></i>'
+    end
+  end
+  %(<div class="glyph">#{cells.join}</div>)
+end.join("\n      ")
+
+NF_CSS = <<CSS
+
+  /* ===== 404 page ===== */
+  body.nf-page { min-height: 100vh; display: flex; flex-direction: column; }
+  body.nf-page main { flex: 1; display: grid; place-items: center; padding: 22vh var(--pad) 14vh; }
+  .nf { display: grid; justify-items: center; gap: 4vh; }
+  .nf-404 { display: flex; gap: calc(var(--cell) * 1.1); --cell: clamp(16px, 3vw, 46px); }
+  .glyph { display: grid; grid-template-columns: repeat(5, var(--cell)); grid-auto-rows: var(--cell); gap: 4px; }
+  .px { display: block; background: #c4c4c4 var(--img) center / cover no-repeat; opacity: 0; transform: scale(.6);
+        transition: opacity .5s ease var(--d), transform .8s cubic-bezier(.2, .7, .2, 1) var(--d); }
+  .px.off { visibility: hidden; }
+  .nf.in .px { opacity: 1; transform: none; }
+  .nf .px:hover { transform: scale(1.35); position: relative; z-index: 2; transition-delay: 0s; }
+  .nf h1 { font-family: var(--display); font-weight: 500; font-size: clamp(22px, 2.3vw, 38px); letter-spacing: -0.015em; color: var(--fg); }
+  .nf a { font-size: 12px; text-transform: uppercase; color: var(--fg); }
+  .nf a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 760px) { .glyph { gap: 3px; } }
+CSS
+
+nf = <<~HTML
+  #{page_head('Page not found | Okjess').rstrip}
+  #{EXTRA_CSS.rstrip}
+  #{NF_CSS.rstrip}
+  </style>
+  </head>
+  <body class="nf-page">
+
+  #{header}
+
+  <main id="top">
+    <div class="nf" id="nf">
+      <div class="nf-404" role="img" aria-label="404">
+      #{glyphs}
+      </div>
+      <h1>Oh no!</h1>
+      <a href="index.html">Back to the homepage</a>
+    </div>
+  </main>
+  <script>requestAnimationFrame(function () { requestAnimationFrame(function () { document.getElementById('nf').classList.add('in'); }); });</script>
+
+  #{tail}
+HTML
+File.write(File.join(SITE, '404.html'), arrows(nf))
+puts "404.html  #{nf.bytesize / 1024} KB"
