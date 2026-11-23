@@ -42,7 +42,8 @@ MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a
 def arrows(s)
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
-   .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')   # Info taken out of the menu
+   .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
+   .sub('</body>') { VIDEO_JS + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
@@ -207,6 +208,50 @@ ORDER = P.keys
 LOCAL_THUMB = P.map { |slug, p| [p[:thumb], slug] }.to_h          # images/x.jpg => slug (homepage used local copies)
 P.each_value { |p| p[:thumb] = img(*p[:four][0], 1024)[:url] }    # project thumbnails now load from Framer, like the galleries
 # the photo for the big box at the top of a work page: the widest picture from that project
+# The preview Framer shows for each project on the homepage (3 are videos). Used on the homepage, in "More works" and at the top of work pages.
+ASSETS = 'https://framerusercontent.com/assets/'
+PREVIEW = {
+  'noko-blind-box'          => [:video, 'Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4'],
+  'beyond-the-trails'       => [:img, 'DZmC0t4OYP21Zn4DN8l0dzW8.jpg', 3000, 2000],
+  'solis'                   => [:video, 'mvYza2nC32CUGuQwNNQlFFz6rk.mp4'],
+  'atelier-co'              => [:img, 'znXA7V9IoNEE2ITK3fjLTN8prs.png', 1497, 1089],
+  'mind-motion'             => [:img, '0sZoU4Ke1XH732egCRi9G3xR8g.jpg', 4000, 3000],
+  'framed-together'         => [:img, 'ESk5wRPZ5dlmidwPPnPVawuwemE.png', 5000, 3335],
+  'collective-moments'      => [:video, 'WghI96voPXWWEbDOpue8WxsqISc.mp4'],
+  'corbeau-mocktail-lounge' => [:img, 'YFFD62Q74NHQHZsQT6dY7c4St2g.png', 2032, 1520],
+}
+def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
+# a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
+def preview_shot(slug, cls = 'shot', max = 1024)
+  kind, id, w, h = PREVIEW[slug]
+  if kind == :video
+    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')">#{video_tag(id)}</div>)
+  else
+    %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')"></div>)
+  end
+end
+
+# Videos play only while on screen, so the page doesn't download all of them at once
+VIDEO_JS = <<~H
+  <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }</style>
+  <script>
+  (function () {
+    var vids = document.querySelectorAll('video[data-auto]');
+    if (!vids.length) return;
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target; v._on = e.isIntersecting;
+        if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; if (!still) { var p = v.play(); if (p) p.catch(function () {}); } }
+        else v.pause();
+      });
+    }, { rootMargin: '200px' });
+    function go(v) { if (v._on && v.paused && !still) { var p = v.play(); if (p) p.catch(function () {}); } }
+    [].forEach.call(vids, function (v) { io.observe(v); v.addEventListener('canplay', function () { go(v); }); });
+    setInterval(function () { [].forEach.call(vids, go); }, 2000);   // in case the browser paused one that is on screen
+  })();
+  </script>
+H
 def hero_img(p) img(*(p[:four] + p[:two]).max_by { |_, w, h| w.to_f / h })[:url] end
 
 def esc(s)
@@ -253,7 +298,7 @@ def more(slug)
     tags = p[:tags].map { |t| "<span>#{esc(t)}</span>" }.join
     <<~H.chomp
       <a class="work" href="#{s}.html">
-        <div class="shot" style="--img:url('#{p[:thumb]}')"></div>
+        #{preview_shot(s)}
         <span class="t">#{esc(p[:short] || p[:title])}</span>
         <span class="tags">#{tags}</span>
       </a>
@@ -283,7 +328,7 @@ ORDER.each do |slug|
       <section class="hero">
         #{wordmark(p[:title])}
         <!-- Placeholder for an image or video: replace the contents with <img src="..."> or <video src="..." autoplay muted loop playsinline></video> -->
-        <div class="hero-media shot arrow-zone" style="--img:url('#{hero_img(p)}')"></div>
+        #{preview_shot(slug, 'hero-media shot arrow-zone', 2048)}
       </section>
 
       <section class="intro ident" data-reveal>
@@ -477,6 +522,6 @@ File.write(File.join(SITE, 'agency-client-work.html'), arrows(acw))
 puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
 
 # Homepage: project pictures load from Framer too (same photos as before)
-home = home.gsub(%r{images/[a-z-]+\.jpg}) { |m| LOCAL_THUMB[m] ? P[LOCAL_THUMB[m]][:thumb] : m }
+home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\)"></div>}) { LOCAL_THUMB[$1] ? preview_shot(LOCAL_THUMB[$1]) : $& }
 File.write(File.join(SITE, 'index.html'), arrows(home))
 puts "index.html  #{home.bytesize / 1024} KB"

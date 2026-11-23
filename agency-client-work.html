@@ -878,6 +878,24 @@
     window.addEventListener('resize', function () { target = clamp(target); });
   })();
 </script>
+<style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }</style>
+<script>
+(function () {
+  var vids = document.querySelectorAll('video[data-auto]');
+  if (!vids.length) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var v = e.target; v._on = e.isIntersecting;
+      if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; if (!still) { var p = v.play(); if (p) p.catch(function () {}); } }
+      else v.pause();
+    });
+  }, { rootMargin: '200px' });
+  function go(v) { if (v._on && v.paused && !still) { var p = v.play(); if (p) p.catch(function () {}); } }
+  [].forEach.call(vids, function (v) { io.observe(v); v.addEventListener('canplay', function () { go(v); }); });
+  setInterval(function () { [].forEach.call(vids, go); }, 2000);   // in case the browser paused one that is on screen
+})();
+</script>
 </body>
 </html>
 
