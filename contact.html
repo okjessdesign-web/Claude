@@ -96,7 +96,8 @@
   /* Menu: just the word "Menu" at the top right. Click it and it expands into a row of links (with "Close" in front). */
   .nav { justify-self: end; display: flex; align-items: baseline; font-family: var(--mono); font-weight: 500; font-size: 14px; line-height: 1; }
   .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }
-  .nbtn.x { font-size: 2em; line-height: .5; font-weight: 400; }   /* the close x */
+  .nbtn.x { line-height: 0; }
+  .nbtn .xic { display: block; width: 17px; height: 17px; }   /* the close x: thin drawn lines */
   .links { display: grid; grid-template-columns: 0fr; transition: grid-template-columns .8s cubic-bezier(.16, 1, .3, 1); }
   .nav.open .links { grid-template-columns: 1fr; }
   .links ul { list-style: none; display: flex; overflow: hidden; min-width: 0; white-space: nowrap; }
@@ -235,6 +236,10 @@
     will-change: transform;
   }
   .cursor.on { opacity: 1; }
+  .cursor .dot { transition: background-color .2s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }
+  .cursor.mag .dot { transform: scale(1.7); }          /* over something clickable: the dot grows slightly */
+  .links a, .f-info a, .whead a, .ct-mail, .nf a { position: relative; }
+  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after { content: ""; position: absolute; inset: -8px -6px; }   /* a slightly bigger area to click */
   .cursor .dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--logo); transition: background-color .2s ease; }
   .cursor.red .dot { background: #f1efe9; }              /* over red: the dot takes the background colour */
   /* over a project image: a plain, crisp arrow (no growing animation) */
@@ -563,6 +568,7 @@
     var root = document.documentElement;
     var TAU = 150;                                  // delay in ms: higher = the dot lags further behind
     var px = 0, py = 0, cx = 0, cy = 0, shown = false, arrow = false, diff = false, red = false, last = 0;
+    var tx = 0, ty = 0, mag = null;                 // where the dot is heading (pulled gently toward a link or button)
     var ctx = document.createElement('canvas').getContext('2d');
     var RED = getComputedStyle(root).getPropertyValue('--fg').trim();
     var redRGB = (function () { var t = document.createElement('i'); t.style.color = RED; document.body.appendChild(t); var c = getComputedStyle(t).color; t.remove(); return c; })();
@@ -624,11 +630,19 @@
       if (inWorks !== arrow) { arrow = inWorks; cursor.classList.toggle('arrow', inWorks); }
       if (a !== diff) { diff = a; cursor.classList.toggle('diff', a); }
       if (rd !== red) { red = rd; cursor.classList.toggle('red', rd); }
+      tx = px; ty = py;
+      var m = (!inWorks && el && el.closest) ? el.closest('a:not(.work), button, label, input, textarea, select') : null;
+      if (m && m.closest('.shot, .lb')) m = null;
+      if (m !== mag) { mag = m; cursor.classList.toggle('mag', !!m); }
+      if (m && !m.matches('label, input, textarea, select')) {   // fields only get the little grow, no pull
+        var mr = m.getBoundingClientRect();
+        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.32; ty = py + (mr.top + mr.height / 2 - py) * 0.32; }
+      }
     }
     function frame(t) {
       var dt = Math.min(64, t - (last || t)); last = t;
       var k = 1 - Math.exp(-dt / TAU);              // same delay on any screen speed
-      cx += (px - cx) * k; cy += (py - cy) * k;
+      cx += (tx - cx) * k; cy += (ty - cy) * k;
       cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
       requestAnimationFrame(frame);
     }
@@ -733,7 +747,8 @@
       nav.classList.toggle('open', open);
       clearTimeout(nav._t); nav.classList.remove('settled');
       if (open) nav._t = setTimeout(function () { nav.classList.add('settled'); }, 900);
-      btn.textContent = open ? '×' : 'Menu'; btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+      if (open) btn.innerHTML = '<svg class="xic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M3.5 3.5l13 13M16.5 3.5l-13 13"/></svg>'; else btn.textContent = 'Menu';
+      btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
     btn.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
@@ -833,7 +848,7 @@
       opacity: 0; transform: scale(.2) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
   .cursor.spin .spinlogo { opacity: 1; transform: scale(1) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
   .cursor.spin .dot, .cursor.spin svg { opacity: 0; transition: opacity .2s ease; }
-  .cursor .dot { transition: background-color .2s ease, opacity .3s ease; }
+  .cursor .dot { transition: background-color .2s ease, opacity .3s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }
   .cursor.red .spinlogo { background: var(--bg); }
   .cursor.diff .spinlogo { background: #fff; }
 </style>

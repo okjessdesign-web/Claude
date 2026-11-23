@@ -5,7 +5,7 @@
       opacity: 0; transform: scale(.2) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
   .cursor.spin .spinlogo { opacity: 1; transform: scale(1) rotate(var(--rot, 0deg)); transition: opacity .35s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
   .cursor.spin .dot, .cursor.spin svg { opacity: 0; transition: opacity .2s ease; }
-  .cursor .dot { transition: background-color .2s ease, opacity .3s ease; }
+  .cursor .dot { transition: background-color .2s ease, opacity .3s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }
   .cursor.red .spinlogo { background: var(--bg); }
   .cursor.diff .spinlogo { background: #fff; }
 </style>

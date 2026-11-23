@@ -5,11 +5,33 @@ CDN  = 'https://framerusercontent.com/images/'
 
 # Changes applied to both the homepage and the project-page template (shared CSS and scripts)
 PATCHES = [
+  ["    var px = 0, py = 0, cx = 0, cy = 0, shown = false, arrow = false, diff = false, red = false, last = 0;\n",
+   "    var px = 0, py = 0, cx = 0, cy = 0, shown = false, arrow = false, diff = false, red = false, last = 0;\n" \
+   "    var tx = 0, ty = 0, mag = null;                 // where the dot is heading (pulled gently toward a link or button)\n"],
+  ["      if (rd !== red) { red = rd; cursor.classList.toggle('red', rd); }\n",
+   "      if (rd !== red) { red = rd; cursor.classList.toggle('red', rd); }\n" \
+   "      tx = px; ty = py;\n" \
+   "      var m = (!inWorks && el && el.closest) ? el.closest('a:not(.work), button, label, input, textarea, select') : null;\n" \
+   "      if (m && m.closest('.shot, .lb')) m = null;\n" \
+   "      if (m !== mag) { mag = m; cursor.classList.toggle('mag', !!m); }\n" \
+   "      if (m && !m.matches('label, input, textarea, select')) {   // fields only get the little grow, no pull\n" \
+   "        var mr = m.getBoundingClientRect();\n" \
+   "        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.32; ty = py + (mr.top + mr.height / 2 - py) * 0.32; }\n" \
+   "      }\n"],
+  ["      cx += (px - cx) * k; cy += (py - cy) * k;\n",
+   "      cx += (tx - cx) * k; cy += (ty - cy) * k;\n"],
+  ["  .cursor.on { opacity: 1; }\n",
+   "  .cursor.on { opacity: 1; }\n" \
+   "  .cursor .dot { transition: background-color .2s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }\n" \
+   "  .cursor.mag .dot { transform: scale(1.7); }          /* over something clickable: the dot grows slightly */\n" \
+   "  .links a, .f-info a, .whead a, .ct-mail, .nf a { position: relative; }\n" \
+   "  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after { content: \"\"; position: absolute; inset: -8px -6px; }   /* a slightly bigger area to click */\n"],
   ["      btn.textContent = open ? 'Close' : 'Menu';\n",
-   "      btn.textContent = open ? '×' : 'Menu'; btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');\n"],
+   "      if (open) btn.innerHTML = '<svg class=\"xic\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\" aria-hidden=\"true\"><path d=\"M3.5 3.5l13 13M16.5 3.5l-13 13\"/></svg>'; else btn.textContent = 'Menu';\n" \
+   "      btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');\n"],
   ["  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n",
    "  .nbtn { border: 0; background: none; padding: 0; font: inherit; color: var(--fg); text-transform: uppercase; cursor: pointer; }\n" \
-   "  .nbtn.x { font-size: 2em; line-height: .5; font-weight: 400; }   /* the close x */\n"],
+   "  .nbtn.x { line-height: 0; }\n  .nbtn .xic { display: block; width: 17px; height: 17px; }   /* the close x: thin drawn lines */\n"],
   # bigger arrows on the pill buttons (Link, email)
   ["  .pill:hover { background: var(--fg); color: var(--bg); }\n",
    "  .pill:hover { background: var(--fg); color: var(--bg); }\n" \
