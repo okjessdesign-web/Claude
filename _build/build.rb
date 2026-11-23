@@ -209,7 +209,7 @@ P = {
     ident: "The packaging system combines bright mesh gradients, playful animal illustrations, and hand drawn fruit motifs to create a cohesive yet expressive visual family. Saturated colours and wavy, energetic typography reinforce the brand’s youthful and spirited tone, while illustrated fruits add appetite appeal and vibrancy. Animal characters interact with the ingredients to introduce motion and personality, making each flavour feel alive. Visual cues also tie flavours to their regions of origin through researched symbolism, adding depth and intention to the storytelling. The design balances clarity and boldness, turning each can into a lively, sensory experience rather than just a label.",
     process: 'Process- original idea, sketches, refined idea, mockup example',
     four: [['alPzAolEgDiwT5C067gqOMRIxc.png',888,888],['AwzBWDder3tUyuHNNoFWpxzE2Y.png',1032,1068],['SQpTSrJjf0mOXow2BKxFVl2qFU.png',1516,1494],['IzYhYRDgo5eaVXAiHn6EzK2t2A.png',4000,2668]],
-    two:  [['qXT2mj9AnOc9z98lDacys84ZI.png',2374,1506],['ryY0u6HtSVzwKD3fvHy7XFMjgTc.png',1831,1693]],
+    two:  [['qXT2mj9AnOc9z98lDacys84ZI.png',2374,1506]],   # billboard photo removed (Jess)
     strip:[['vGRDP7dXnsy2FFsV2qG68mO30.jpg',1068,1064],['LW1l0a03ByxtJbmAggCxIH3XJs.jpeg',3024,4032],['h2KNWowqLB5X2C2Yoo7OSFOiF5w.png',4000,4000],['6l5WMn2Xr8c9Zfn2wIG9HQmqwc.jpg',4000,3000]],
   },
   'mind-motion' => {
