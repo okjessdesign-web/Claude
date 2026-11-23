@@ -459,15 +459,15 @@ end
 LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 TILES = [
   # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description]
-  [ 5,   4, 30, 'powerade-tent.jpg',          2000, 1120, 'Powerade Power Water'],
-  [62,   2, 19, 'powerade-sign.jpg',          1104,  812, 'Powerade Power Water'],
+  [ 5,   4, 30, 'powerade-tent.jpg',          1680, 1030, 'Powerade Power Water'],
+  [64,   2, 15, 'powerade-sign.jpg',           740,  720, 'Powerade Power Water'],
   [41,  24, 13, 'welchs-grape.jpg',            580,  870, "Welch's Real PB&Js"],
   [73,  34, 13, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
   [ 9,  44, 13, 'welchs-strawberry.jpg',       580,  870, "Welch's Real PB&Js"],
   [31,  60, 28, 'tresemme.jpg',               2000, 1127, 'TRESemmé'],
-  [69,  78, 23, 'liquid-iv-kiosk.jpg',        2000, 1333, 'Liquid I.V.'],
+  [69,  78, 23, 'liquid-iv-kiosk.jpg',        1275,  962, 'Liquid I.V.'],
   [ 5,  90, 27, 'liquid-iv-headliner.jpg',    2000, 1125, 'Liquid I.V.'],
-  [39, 106, 26, 'liquid-iv-booth-render.jpg', 2000, 1124, 'Liquid I.V.'],
+  [39, 106, 26, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.'],
   [74, 114, 15, 'good-company-halloween.jpg',  920, 1654, 'Good Company Productions'],
   [ 8, 130, 20, 'saturn-character-sides.jpg',      1600, 1566, 'SATurn'],
   [42, 140, 20, 'saturn-character-top-bottom.jpg', 1600, 1566, 'SATurn'],
