@@ -662,7 +662,8 @@ CONTACT_CSS = <<CSS
   .ct-form input::placeholder, .ct-form textarea::placeholder { color: var(--fg); opacity: 1; text-transform: uppercase; }
   .ct-form input:focus, .ct-form textarea:focus { border-bottom-color: var(--fg); }   /* lines stay red, also while typing */
   .ct-form input:-webkit-autofill, .ct-form textarea:-webkit-autofill { -webkit-text-fill-color: var(--fg); -webkit-box-shadow: 0 0 0 40px var(--bg) inset; transition: background-color 9999s; }   /* browser autofill keeps the page colours */
-  .ct-form .pill { margin-top: 0; cursor: pointer; background: none; font: inherit; color: var(--fg); justify-self: start; }
+  .ct-form .pill { margin-top: 0; cursor: pointer; background: transparent; font: inherit; color: var(--fg); justify-self: start; }
+  .ct-form .pill:hover, .ct-form .pill:focus-visible { background: var(--fg); color: var(--bg); }   /* same hover as every other button */
   /* the thank-you moment: the page flips to red, says thank you, then eases back */
   .ty { position: fixed; inset: 0; z-index: 9000; background: var(--fg); color: var(--bg); display: grid; place-items: center; text-align: center; padding: 0 var(--pad);
         clip-path: inset(100% 0 0 0); visibility: hidden; transition: clip-path 1s cubic-bezier(.76, 0, .24, 1), visibility 0s 1s; }
