@@ -610,5 +610,13 @@ home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 home = trail_videos(home)
+# St. Jacobs and Tipsy Tonic swap places on the homepage
+def swap_works(home, a, b)
+  re = ->(slug) { %r{<a class="work" href="#{Regexp.escape(slug)}\.html">.*?</a>}m }
+  x = home[re[a]] or abort "swap #{a}"
+  y = home[re[b]] or abort "swap #{b}"
+  home.sub(x, "\u0000A").sub(y, "\u0000B").sub("\u0000A", y).sub("\u0000B", x)
+end
+home = swap_works(home, 'beyond-the-trails', 'atelier-co')
 File.write(File.join(SITE, 'index.html'), arrows(home))
 puts "index.html  #{home.bytesize / 1024} KB"
