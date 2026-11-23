@@ -59,6 +59,7 @@ EXTRA_CSS = <<CSS
 
   /* ===== Added for the other project pages ===== */
   .body-copy + .body-copy { margin-top: 1.1em; }   /* paragraphs that follow each other get a gap */
+  h1.wmbox .ch { transition-delay: var(--d, 0ms); }   /* page titles rise as one piece, not letter by letter */
 CSS
 
 head   = TPL[/\A.*?(?=<\/style>)/m]
