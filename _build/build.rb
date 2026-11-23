@@ -579,9 +579,29 @@ HTML
 File.write(File.join(SITE, 'agency-client-work.html'), arrows(acw))
 puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
 
+# Homepage hover trail: only the animated projects, playing live (replaces the trail's image list and spawn step)
+TRAIL_ITEMS_JS = File.read(File.join(__dir__, 'trail_items.js'), encoding: 'UTF-8')
+def trail_videos(home)
+  a = home.index("    // The images and titles come from the Selected Works list below") or abort 'trail items'
+  b = home.index("    var ratios = ", a) or abort 'trail ratios'
+  home = home[0...a] + TRAIL_ITEMS_JS.sub("    items.forEach(master);                           // warm up all three as soon as the trail is first used (see below)\n", '') + home[b..-1]
+  spawn_old = "      el.style.setProperty('--img', it.loaded ? it.img : 'var(--ph)');   // placeholder picture until the real image exists\n"
+  spawn_new = "      el.style.setProperty('--img', it.img);     // still picture underneath until the video frame is ready\n" \
+              "      var c = document.createElement('canvas'); c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';\n" \
+              "      el.appendChild(c); master(it);\n"
+  home.sub!(spawn_old, spawn_new) or abort 'spawn'
+  size_old = "      trail.appendChild(el);        // newest goes on top of the pile\n"
+  size_new = "      trail.appendChild(el);        // newest goes on top of the pile\n" \
+             "      var dpr = Math.min(2, window.devicePixelRatio || 1); c.width = Math.round(el.offsetWidth * dpr); c.height = Math.round(el.offsetHeight * dpr);\n" \
+             "      painting.push({ c: c, it: it }); if (painting.length === 1) requestAnimationFrame(paint);\n"
+  home.sub!(size_old, size_new) or abort 'size'
+  home
+end
+
 # Homepage: project pictures load from Framer too (same photos as before)
 home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\)"></div>}) { LOCAL_THUMB[$1] ? preview_shot(LOCAL_THUMB[$1]) : $& }
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
+home = trail_videos(home)
 File.write(File.join(SITE, 'index.html'), arrows(home))
 puts "index.html  #{home.bytesize / 1024} KB"
