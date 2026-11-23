@@ -144,7 +144,7 @@
   /* Cursor trail: project images appear along the mouse path over the hero, then fade away */
   .trail { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 2; }
   .tile {
-    position: absolute; width: clamp(120px, 14vw, 280px);
+    position: absolute; width: clamp(70px, 8vw, 160px);
     background: #c6c6c6 var(--img) center / cover no-repeat;   /* grey box until the image file is added */
     opacity: 0; transform: translate(-50%, -50%) scale(.92);
     transition: opacity .3s ease, transform .6s cubic-bezier(.2, .7, .2, 1);
@@ -452,10 +452,10 @@
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;  // mouse/trackpad only
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var GAP  = 120;    // how far (px) the cursor travels before the next image appears
-    var STAY = 900;    // how long (ms) an image stays fully visible
+    var GAP  = 55;     // how far (px) the cursor travels before the next image appears
+    var STAY = 700;    // how long (ms) an image stays fully visible
     var FADE = 800;    // how long (ms) it takes to fade out
-    var MAX  = 6;      // most images on screen at once
+    var MAX  = 12;     // most images on screen at once
 
     var hero = document.querySelector('.hero');
     var trail = hero && hero.querySelector('.trail');

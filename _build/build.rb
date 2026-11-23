@@ -595,6 +595,13 @@ def trail_videos(home)
              "      var dpr = Math.min(2, window.devicePixelRatio || 1); c.width = Math.round(el.offsetWidth * dpr); c.height = Math.round(el.offsetHeight * dpr);\n" \
              "      painting.push({ c: c, it: it }); if (painting.length === 1) requestAnimationFrame(paint);\n"
   home.sub!(size_old, size_new) or abort 'size'
+  # smaller tiles that appear more often
+  [["    var GAP  = 120;", "    var GAP  = 55; "],
+   ["    var MAX  = 6;  ", "    var MAX  = 12; "],
+   ["    var STAY = 900;", "    var STAY = 700;"],
+   ["position: absolute; width: clamp(120px, 14vw, 280px);", "position: absolute; width: clamp(70px, 8vw, 160px);"]].each do |a, b|
+    home.sub!(a, b) or abort "trail size: #{a}"
+  end
   home
 end
 
