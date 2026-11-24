@@ -341,7 +341,8 @@
   body.contact-page main { flex: 1; }
   .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 22vh 1vw 10vh 1.95vw; align-items: start; }
   .ct h2 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.015em; line-height: 1.1; color: var(--fg); max-width: 15em; text-wrap: balance; }
-  .ct-mail { display: inline-block; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
+  .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
+  .ct-mail + .ct-mail { margin-top: 10px; }
   .ct-mail:hover { text-decoration: underline; text-underline-offset: 3px; }
   .ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 2vw; max-width: 900px; }
   .ct-form label { display: block; }
@@ -384,7 +385,6 @@
         <li><a href="index.html#works">Works</a></li>
         <li><a href="agency-client-work.html">Agency + Client</a></li>
         <li><a href="contact.html">Contact</a></li>
-        <li><a href="play.html">Play</a></li>
       </ul>
     </div>
   </div>
@@ -393,8 +393,9 @@
 <main id="top">
   <section class="ct">
     <div>
-      <h2>Let&rsquo;s stay in touch and create amazing things&nbsp;together.</h2>
+      <h2>Ambitious brands start with a&nbsp;conversation.</h2>
       <a class="ct-mail" href="mailto:okjessdesign@gmail.com">okjessdesign@gmail.com</a>
+      <a class="ct-mail" href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a>
     </div>
     <!-- Placeholder form: it does not send anything yet. Hook it up to a form service (e.g. Formspree) when ready. -->
     <form class="ct-form" id="ct-form">
@@ -411,19 +412,6 @@
 </div>
 
 <footer id="contact">
-  <div class="f-mid">
-    <div>
-      <h4 class="f-head fade">Available for work and always looking for exciting projects.</h4>
-      <div class="fade f-pill">
-        <a class="pill" href="mailto:okjessdesign@gmail.com"><span>okjessdesign@gmail.com</span><svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg></a>
-      </div>
-    </div>
-    <div class="f-info fade">
-      <a href="https://okjess.com/blog">Blog</a>
-      <a href="https://okjess.com/playground">Playground</a>
-      <a href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a>
-    </div>
-  </div>
     <div class="wmbox" data-w="0.5" data-pad aria-hidden="true"><span class="wm"><span class="ch">O</span><span class="ch">k</span><span class="ch">j</span><span class="ch">e</span><span class="ch">s</span><span class="ch">s</span><i class="bl"></i></span></div>
   <div class="f-bottom fade">
     <div class="f-time"><span id="clock">--:--</span><span>Toronto, Canada</span></div>

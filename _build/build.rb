@@ -71,7 +71,7 @@ def arrows(s)
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
-   .sub('<li><a href="#contact">Contact</a></li>', %(<li><a href="contact.html">Contact</a></li>\n        <li><a href="play.html">Play</a></li>))
+   .sub('<li><a href="#contact">Contact</a></li>', '<li><a href="contact.html">Contact</a></li>')
    .sub('</body>') { VIDEO_JS + SPIN_JS + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
@@ -673,7 +673,8 @@ CONTACT_CSS = <<CSS
   body.contact-page main { flex: 1; }
   .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 22vh 1vw 10vh 1.95vw; align-items: start; }
   .ct h2 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.015em; line-height: 1.1; color: var(--fg); max-width: 15em; text-wrap: balance; }
-  .ct-mail { display: inline-block; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
+  .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
+  .ct-mail + .ct-mail { margin-top: 10px; }
   .ct-mail:hover { text-decoration: underline; text-underline-offset: 3px; }
   .ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 2vw; max-width: 900px; }
   .ct-form label { display: block; }
@@ -736,8 +737,9 @@ contact = <<~HTML
   <main id="top">
     <section class="ct">
       <div>
-        <h2>Let&rsquo;s stay in touch and create amazing things&nbsp;together.</h2>
+        <h2>Ambitious brands start with a&nbsp;conversation.</h2>
         <a class="ct-mail" href="mailto:okjessdesign@gmail.com">okjessdesign@gmail.com</a>
+        <a class="ct-mail" href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a>
       </div>
       <!-- Placeholder form: it does not send anything yet. Hook it up to a form service (e.g. Formspree) when ready. -->
       <form class="ct-form" id="ct-form">
@@ -753,7 +755,7 @@ contact = <<~HTML
     <p>Thank you for reaching out. I&rsquo;ll be in touch&nbsp;shortly.<small>Jessica Baker</small></p>
   </div>
 
-  #{PAGE_TAIL.sub('</body>') { CONTACT_JS + '</body>' }}
+  #{PAGE_TAIL.sub(%r{  <div class="f-mid">.*?\n  </div>\n(?=    <div class="wmbox")}m, '').sub('</body>') { CONTACT_JS + '</body>' }}
 HTML
 File.write(File.join(SITE, 'contact.html'), arrows(contact))
 puts "contact.html  #{contact.bytesize / 1024} KB"
@@ -777,8 +779,7 @@ play = <<~HTML
 
   #{tail}
 HTML
-File.write(File.join(SITE, 'play.html'), arrows(play))
-puts "play.html  #{play.bytesize / 1024} KB"
+# Play page parked for now (not built)
 
 # --- 404: "404" drawn with little project pictures, "Oh no!" underneath ---
 GLYPHS = {
