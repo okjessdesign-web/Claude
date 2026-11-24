@@ -753,7 +753,7 @@ contact = <<~HTML
     <p>Thank you for reaching out. I&rsquo;ll be in touch&nbsp;shortly.<small>Jessica Baker</small></p>
   </div>
 
-  #{tail_with_word('Contact').sub('</body>') { CONTACT_JS + '</body>' }}
+  #{PAGE_TAIL.sub('</body>') { CONTACT_JS + '</body>' }}
 HTML
 File.write(File.join(SITE, 'contact.html'), arrows(contact))
 puts "contact.html  #{contact.bytesize / 1024} KB"
