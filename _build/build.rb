@@ -677,7 +677,7 @@ CONTACT_CSS = <<CSS
   .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 110px 1vw 60px 1.95vw; align-items: start; align-content: center;
         min-height: 100vh; min-height: 100svh; box-sizing: border-box; }   /* fills the first screen, centred; the footer only shows once you scroll */
   .ct h2 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.06em; line-height: 1; color: var(--fg); max-width: 13em; text-wrap: balance; }   /* same type as the big titles */
-  .ct-sub { margin-top: 16px; font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; color: var(--fg); }
+  .ct-sub { margin-top: 16px; font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); }
   .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
   .ct-mail + .ct-mail { margin-top: 10px; }
   .ct-mail:hover { text-decoration: underline; text-underline-offset: 3px; }
