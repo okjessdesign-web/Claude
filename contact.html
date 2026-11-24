@@ -349,13 +349,13 @@
   .ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 2vw; max-width: 900px; }
   .ct-form label { display: block; }
   .ct-form label.full { grid-column: 1 / -1; }
-  .ct-form .lab { display: block; font-family: var(--label); font-weight: 500; font-size: 18px; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); margin-bottom: 12px; }
+  .ct-form .lab { display: block; font-family: var(--label); font-weight: 500; font-size: 18px; letter-spacing: .02em; text-transform: uppercase; color: var(--fg); margin-bottom: 12px; }
   .ct-form input, .ct-form textarea { width: 100%; border: 0; border-bottom: var(--hair); background: transparent; border-radius: 0; padding: 6px 0 10px;
-      font-family: var(--mono); font-weight: 500; font-size: 15px; color: var(--fg); caret-color: var(--fg); outline: none; resize: none; }
+      font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: .02em; color: var(--ink); caret-color: var(--ink); outline: none; resize: none; }
   .ct-form textarea { min-height: 7.5em; line-height: 1.5; }
-  .ct-form input::placeholder, .ct-form textarea::placeholder { color: var(--fg); opacity: 1; text-transform: uppercase; }
+  .ct-form input::placeholder, .ct-form textarea::placeholder { color: var(--ink); opacity: 1; text-transform: uppercase; }
   .ct-form input:focus, .ct-form textarea:focus { border-bottom-color: var(--fg); }   /* lines stay red, also while typing */
-  .ct-form input:-webkit-autofill, .ct-form textarea:-webkit-autofill { -webkit-text-fill-color: var(--fg); -webkit-box-shadow: 0 0 0 40px var(--bg) inset; transition: background-color 9999s; }   /* browser autofill keeps the page colours */
+  .ct-form input:-webkit-autofill, .ct-form textarea:-webkit-autofill { -webkit-text-fill-color: var(--ink); -webkit-box-shadow: 0 0 0 40px var(--bg) inset; transition: background-color 9999s; }   /* browser autofill keeps the page colours */
   .ct-form .pill { margin-top: 0; cursor: pointer; background: transparent; font: inherit; color: var(--fg); justify-self: start; }
   .ct-form .pill:hover, .ct-form .pill:focus-visible { background: var(--fg); color: var(--bg); }   /* same hover as every other button */
   /* the thank-you moment: the page flips to red, says thank you, then eases back */
