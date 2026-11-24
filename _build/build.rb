@@ -642,6 +642,7 @@ home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 home = trail_videos(home)
+home = home.sub("min-height: calc(100vh + var(--extra, 0px)); min-height: calc(100svh + var(--extra, 0px));", "min-height: 100vh; min-height: 100svh;") or abort("hero")   # homepage: the whole name (j included) fits on the first screen
 home = home.sub("  .row.flip { grid-template-columns: 67fr 32fr; }\n", "  .row.flip { grid-template-columns: 67fr 32fr; }\n  .whead + .row { border-top: 0; }   /* no line right under Selected Works */\n") or abort('no line')
 # St. Jacobs and Tipsy Tonic swap places on the homepage
 def swap_works(home, a, b)
