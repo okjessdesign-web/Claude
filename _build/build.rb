@@ -680,6 +680,9 @@ CONTACT_CSS = <<CSS
   .ct-sub { margin-top: 16px; font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); }
   .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
   .ct-mail + .ct-mail { margin-top: 10px; }
+  .ct > div:first-child { align-self: stretch; display: flex; flex-direction: column; }   /* headline at the top, links at the bottom */
+  .ct-links { margin-top: auto; padding-top: 40px; }
+  .ct-links .ct-mail:first-child { margin-top: 0; }
   .ct-mail:hover { text-decoration: underline; text-underline-offset: 3px; }
   .ct-form { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 2vw; max-width: 900px; }
   .ct-form label { display: block; }
@@ -744,8 +747,10 @@ contact = <<~HTML
       <div>
         <h2>Ambitious brands start with a&nbsp;conversation.</h2>
         <p class="ct-sub">Now booking projects for&nbsp;2027.</p>
-        <a class="ct-mail" href="mailto:okjessdesign@gmail.com">okjessdesign@gmail.com</a>
-        <a class="ct-mail" href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a>
+        <div class="ct-links">
+          <a class="ct-mail" href="mailto:okjessdesign@gmail.com">okjessdesign@gmail.com</a>
+          <a class="ct-mail" href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a>
+        </div>
       </div>
       <!-- Placeholder form: it does not send anything yet. Hook it up to a form service (e.g. Formspree) when ready. -->
       <form class="ct-form" id="ct-form">
