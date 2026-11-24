@@ -464,7 +464,7 @@ TILES = [
   # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description]
   [ 4,   4, 35, 'powerade-tent.jpg',          1544, 1057, 'Powerade Power Water'],
   [44,   8, 20, 'powerade-sign.jpg',           740,  720, 'Powerade Power Water'],
-  [70,   2, 26, 'cutwater-wristbands.jpg',    1564, 1134, 'Cutwater'],
+  [67,   2, 31, 'cutwater-wristbands.jpg',    1564, 1134, 'Cutwater'],
   [ 8,  34, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
   [28,  38, 34, 'tresemme.jpg',               2000, 1127, 'TRESemmé'],
   [68,  28, 24, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.'],
@@ -642,6 +642,7 @@ home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 home = trail_videos(home)
+home = home.sub("  .row.flip { grid-template-columns: 67fr 32fr; }\n", "  .row.flip { grid-template-columns: 67fr 32fr; }\n  .whead + .row { border-top: 0; }   /* no line right under Selected Works */\n") or abort('no line')
 # St. Jacobs and Tipsy Tonic swap places on the homepage
 def swap_works(home, a, b)
   re = ->(slug) { %r{<a class="work" href="#{Regexp.escape(slug)}\.html">.*?</a>}m }
@@ -677,8 +678,8 @@ CONTACT_CSS = <<CSS
   .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 110px 1vw 60px 1.95vw; align-items: start; align-content: center;
         min-height: 100vh; min-height: 100svh; box-sizing: border-box; }   /* fills the first screen, centred; the footer only shows once you scroll */
   .ct h2 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.06em; line-height: 1; color: var(--fg); max-width: 13em; text-wrap: balance; }   /* same type as the big titles */
-  .ct-sub { margin-top: 16px; font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); }
-  .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
+  .ct-sub { margin-top: 16px; font-family: var(--label); font-weight: 500; font-size: 18px; line-height: 1.2; text-transform: uppercase; color: var(--ink); }
+  .ct-mail { display: table; margin-top: 26px; font-family: var(--label); font-weight: 500; font-size: 16px; text-transform: uppercase; color: var(--fg); }
   .ct-mail + .ct-mail { margin-top: 10px; }
   .ct > div:first-child { align-self: stretch; display: flex; flex-direction: column; }   /* headline at the top, links at the bottom */
   .ct-links { margin-top: auto; padding-top: 40px; }
@@ -694,7 +695,7 @@ CONTACT_CSS = <<CSS
   .ct-form input::placeholder, .ct-form textarea::placeholder { color: var(--ink); opacity: 1; text-transform: uppercase; }
   .ct-form input:focus, .ct-form textarea:focus { border-bottom-color: var(--fg); }   /* lines stay red, also while typing */
   .ct-form input:-webkit-autofill, .ct-form textarea:-webkit-autofill { -webkit-text-fill-color: var(--ink); -webkit-box-shadow: 0 0 0 40px var(--bg) inset; transition: background-color 9999s; }   /* browser autofill keeps the page colours */
-  .ct-form .pill { margin-top: 0; cursor: pointer; background: transparent; font: inherit; color: var(--fg); justify-self: start; }
+  .ct-form .pill { margin-top: 0; cursor: pointer; background: transparent; font: inherit; font-family: var(--label); font-weight: 500; font-size: 15px; color: var(--fg); justify-self: start; }
   .ct-form .pill:hover, .ct-form .pill:focus-visible { background: var(--fg); color: var(--bg); }   /* same hover as every other button */
   /* the thank-you moment: the page flips to red, says thank you, then eases back */
   .ty { position: fixed; inset: 0; z-index: 9000; background: var(--fg); color: var(--bg); display: grid; place-items: center; text-align: center; padding: 0 var(--pad);

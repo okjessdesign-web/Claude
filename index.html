@@ -181,6 +181,7 @@
     border-top: var(--hair);
   }
   .row.flip { grid-template-columns: 67fr 32fr; }
+  .whead + .row { border-top: 0; }   /* no line right under Selected Works */
   .work { display: block; }
   .work .shot { background: #c4c4c4 var(--img) center / cover no-repeat; }   /* grey until the image file is added */
   .row:not(.flip) .work:nth-child(1) .shot, .row.flip .work:nth-child(2) .shot { aspect-ratio: 4 / 3; }       /* small */
