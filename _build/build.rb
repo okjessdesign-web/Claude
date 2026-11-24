@@ -468,6 +468,8 @@ TILES = [
   [ 4,  63, 30, 'saturn-character-sheet.jpg', 2400, 1175, 'SATurn'],
   [37,  65, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.'],
   [71,  56, 21, 'good-company-halloween.jpg',  920, 1654, 'Good Company Productions'],
+  [10,  92, 24, 'ready-force.jpg',            1066,  888, 'Ready Force'],
+  [42,  96, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union'],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
