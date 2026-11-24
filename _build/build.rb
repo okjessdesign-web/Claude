@@ -5,6 +5,9 @@ CDN  = 'https://framerusercontent.com/images/'
 
 # Changes applied to both the homepage and the project-page template (shared CSS and scripts)
 PATCHES = [
+  # lighter dimming on project pictures when the header passes over them
+  ['  .shot::after, .tile::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .4); opacity: 0; transition: opacity .3s ease; pointer-events: none; }',
+   '  .shot::after, .tile::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .16); opacity: 0; transition: opacity .3s ease; pointer-events: none; }'],
   ["    var px = 0, py = 0, cx = 0, cy = 0, shown = false, arrow = false, diff = false, red = false, last = 0;\n",
    "    var px = 0, py = 0, cx = 0, cy = 0, shown = false, arrow = false, diff = false, red = false, last = 0;\n" \
    "    var tx = 0, ty = 0, mag = null;                 // where the dot is heading (pulled gently toward a link or button)\n"],
@@ -671,7 +674,8 @@ CONTACT_CSS = <<CSS
   /* ===== Contact page ===== */
   body.contact-page { min-height: 100vh; display: flex; flex-direction: column; }
   body.contact-page main { flex: 1; }
-  .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 22vh 1vw 10vh 1.95vw; align-items: start; }
+  .ct { display: grid; grid-template-columns: 32fr 67fr; gap: 1vw; padding: 110px 1vw 60px 1.95vw; align-items: start; align-content: center;
+        min-height: 100vh; min-height: 100svh; box-sizing: border-box; }   /* fills the first screen, centred; the footer only shows once you scroll */
   .ct h2 { font-family: var(--display); font-weight: 500; font-size: clamp(26px, 2.6vw, 44px); letter-spacing: -0.015em; line-height: 1.1; color: var(--fg); max-width: 15em; text-wrap: balance; }
   .ct-mail { display: table; margin-top: 26px; font-size: 16px; text-transform: uppercase; color: var(--fg); }
   .ct-mail + .ct-mail { margin-top: 10px; }
@@ -699,7 +703,7 @@ CONTACT_CSS = <<CSS
   .ty.show p { opacity: 1; transform: none; transition-delay: .45s; }
   html.ty-on .cursor .dot { background: var(--bg) !important; }
   @media (max-width: 760px) {
-    .ct { grid-template-columns: 1fr; padding: 16vh var(--pad) 8vh; gap: 48px; }
+    .ct { grid-template-columns: 1fr; padding: 100px var(--pad) 48px; gap: 48px; }
     .ct-form { grid-template-columns: 1fr; gap: 28px; }
   }
 CSS
