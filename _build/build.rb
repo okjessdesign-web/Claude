@@ -294,8 +294,8 @@ PREVIEW = {
 }
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
-# award sticker on a black box, top left of the project's preview (homepage only)
-BADGE = { 'noko-blind-box' => %(<span class="badge-box"></span><img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention">) }   # homepage only
+# award sticker, top left of the project's preview (homepage only)
+BADGE = { 'noko-blind-box' => %(<img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention">) }   # homepage only
 def preview_shot(slug, cls = 'shot', max = 1024, badge = false)
   kind, id, w, h = PREVIEW[slug]
   r = w.to_f / h
@@ -310,8 +310,7 @@ end
 # Videos play only while on screen, so the page doesn't download all of them at once
 VIDEO_JS = <<~H
   <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .shot > .badge-box { position: absolute; left: 1%; top: 3.6%; width: 15%; height: 6.5%; background: #000; z-index: 1; pointer-events: none; }   /* tiny box that hides SEASIDE */
-  .shot > .badge { position: absolute; left: 3.5%; top: 4.5%; width: 36%; height: auto; z-index: 2; pointer-events: none; }   /* the sticker, on top */</style>
+  .shot > .badge { position: absolute; left: 1.5%; top: 3%; width: 46%; height: auto; z-index: 2; pointer-events: none; }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
   <script>
   (function () {
     var vids = document.querySelectorAll('video[data-auto]');
