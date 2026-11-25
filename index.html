@@ -969,9 +969,10 @@
     tone(660, 880, 0, 0.09, 0.07, 'sine');
     tone(990, 1320, 0.055, 0.12, 0.05, 'sine');
   }
-  function nope() {                                                  // a click on nothing: a soft, low, muted tock
+  function nope() {                                                  // a click on nothing: a playful little "boo-dip", two soft notes stepping down
     var first = !ctx; audio(); if (first) return;                   // the very first click only switches sound on
-    tone(330, 220, 0, 0.07, 0.035, 'sine');
+    tone(784, 760, 0, 0.075, 0.03, 'triangle');
+    tone(587, 523, 0.06, 0.11, 0.028, 'triangle');
   }
   function sparkle() {                                             // the cursor turns into the spinning logo: a little twinkly rising run
     if (!ctx || ctx.state !== 'running') return;
