@@ -892,7 +892,10 @@
 .shot:has(> .badge) { overflow: hidden; isolation: isolate; }   /* the sticker never shows outside its picture, even while the rows slide over each other */
 .shot > .badge { position: absolute; left: 2.5%; top: 18%; width: 31%; aspect-ratio: 1; z-index: 1; pointer-events: none;   /* blue wavy seal with the sticker inside, top left */
                  background: url('images/badges/scallop-light.svg') center / contain no-repeat; display: grid; place-items: center; }
-.shot > .badge img { width: 60%; height: auto; display: block; transform: translateX(2%); }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
+.shot > .badge img { width: 60%; height: auto; display: block; transform: translateX(2%); }
+.shot > .badge { animation: sway 3.2s ease-in-out infinite alternate; transform-origin: 50% 50%; }   /* the seal rocks gently back and forth in place */
+@keyframes sway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@media (prefers-reduced-motion: reduce) { .shot > .badge { animation: none; } }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
 <script>
 (function () {
   var vids = document.querySelectorAll('video[data-auto]');
