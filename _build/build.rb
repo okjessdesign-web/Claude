@@ -503,35 +503,35 @@ TILES = [
   [67,   2, 31, 'cutwater-wristbands.jpg',    1564, 1134, 'Cutwater x Lollapalooza',
     'Drink entry wristbands for Cutwater at Lollapalooza.',
     'Salt XC, independent work'],
-  [ 8,  34, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's PB&J",
+  [ 6,  34, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's PB&J",
     "Hand-built more than 100 print and web ads for the launch of Welch's new PB&J sandwiches.",
     'Salt XC, with Graham Nhlamba'],
-  [28,  38, 34, 'tresemme.jpg',               2000, 1127, 'TRESemmé',
-    'Shelf lips and signage for TRESemmé Rich Moisture shampoo and conditioner.',
-    'Salt XC, with Rob Simone and Emma Mikelberg'],
-  [68,  28, 24, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.',
-    'Experiential pop-up for Liquid I.V. at the FVDED in the Park music festival.',
-    'Salt XC, with Emma Mikelberg and Rob Simone'],
-  [ 4,  63, 30, 'saturn-character-sheet.jpg', 2400, 1175, 'Saturn Studio',
-    'Character sheet for a sandbox-style audio game.',
-    'Client work'],
-  [37,  65, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.',
-    'Experiential pop-up for Liquid I.V. at RBC Amphitheatre.',
-    'Salt XC, with Emma Mikelberg and Rob Simone'],
-  [71,  56, 21, 'good-company-halloween.jpg',  920, 1654, 'Good Co Productions',
-    "Poster for Good Co Productions' Halloween costume party and concert.",
-    'Client work'],
-  [10,  92, 24, 'ready-force.jpg',            1066,  888, 'Readyforce',
-    'Collateral spanning brochures, postcards, business cards, emails, animations, and animated intros and outros.',
-    'TBK Creative, with Simon Dunford'],
-  [42,  96, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union + Kawartha',
-    'Business campaign collateral: more than 100 animated and static ads for YouTube, Instagram, LinkedIn and Meta.'],
-  [72, 100, 20, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater',
+  [27,  38, 18, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater',
     'Patches and icons for sleep masks, cowboy hats and drinkware, made for a Nashville retreat with the Kansas City Chiefs.',
     'Salt XC, with Randy Wescott'],
-  [14, 124, 22, 'whynot-pilot-cards.jpg',     1400, 1400, 'WHYNOT Run Club',
+  [50,  33, 20, 'whynot-pilot-cards.jpg',     1400, 1400, 'WHYNOT Run Club',
     'Logo design for WHYNOT Run Club. Pictured: the WHYNOT x Pilot Coffee Roasters punch cards (cards not designed by me).',
     'Client work'],
+  [75,  30, 22, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.',
+    'Experiential pop-up for Liquid I.V. at the FVDED in the Park music festival.',
+    'Salt XC, with Emma Mikelberg and Rob Simone'],
+  [10,  68, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.',
+    'Experiential pop-up for Liquid I.V. at RBC Amphitheatre.',
+    'Salt XC, with Emma Mikelberg and Rob Simone'],
+  [76,  62, 21, 'good-company-halloween.jpg',  920, 1654, 'Good Co Productions',
+    "Poster for Good Co Productions' Halloween costume party and concert.",
+    'Client work'],
+  [ 4,  98, 30, 'saturn-character-sheet.jpg', 2400, 1175, 'Saturn Studio',
+    'Character sheet for a sandbox-style audio game.',
+    'Client work'],
+  [38, 104, 32, 'tresemme.jpg',               2000, 1127, 'TRESemmé',
+    'Shelf lips and signage for TRESemmé Rich Moisture shampoo and conditioner.',
+    'Salt XC, with Rob Simone and Emma Mikelberg'],
+  [74, 108, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union + Kawartha',
+    'Business campaign collateral: more than 100 animated and static ads for YouTube, Instagram, LinkedIn and Meta.'],
+  [10, 122, 24, 'ready-force.jpg',            1066,  888, 'Readyforce',
+    'Collateral spanning brochures, postcards, business cards, emails, animations, and animated intros and outros.',
+    'TBK Creative, with Simon Dunford'],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
@@ -550,10 +550,10 @@ ACW_CSS = <<CSS
   .ft { cursor: default; -webkit-tap-highlight-color: transparent; }
   .ft .cap { position: absolute; left: calc(var(--w) * var(--cx)); top: calc(100% + var(--h) * .225 * var(--cy) + 14px); width: max(calc(var(--w) * 1.45), 260px);
              opacity: 0; transform: translateY(-6px); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); pointer-events: none;
-             background: var(--bg); padding: 6px 0; }
+             padding: 6px 0; }   /* no box behind the caption */
   .ft.on .cap { opacity: 1; transform: none; transition-delay: .15s; }
   .ft .cap b { display: block; font-family: var(--label); font-weight: 500; text-transform: uppercase; font-size: 14px; color: var(--ink); }
-  .ft .cap p { margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--fg); }
+  .ft .cap p { margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--fg); text-wrap: pretty; }   /* no single word left alone on the last line */
   .ft .cap p.cr { margin-top: 8px; font-size: 11px; color: var(--ink); text-transform: uppercase; letter-spacing: .02em; }   /* agency + collaborators */
   .field.has-on .ft:not(.on) { opacity: .35; }
   @keyframes drift { from { translate: 0 0; } to { translate: var(--dx) var(--dy); } }
@@ -580,7 +580,7 @@ tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc, credit
   <<~H.chomp
         <div class="ft#{right ? ' r' : ''}" style="#{style}">
           <div class="pic" style="background-image:url('images/agency/#{pic}')" role="img" aria-label="#{esc(title)}"></div>
-          <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM)}</p>#{credit ? "<p class=\"cr\">#{esc(credit)}</p>" : ''}</div>
+          <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM).sub(/ (\S+)\z/, '&nbsp;\1')}</p>#{credit ? "<p class=\"cr\">#{esc(credit)}</p>" : ''}</div>
         </div>
   H
 end.join("\n")
