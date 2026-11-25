@@ -7,6 +7,8 @@ CDN  = 'https://framerusercontent.com/images/'
 PATCHES = [
   ["      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n",
    "      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n" \
+   "      var ref = box.getAttribute('data-ref');                                    // data-ref: size the title as if it read this text (Contact matches Agency + Client Work)\n" \
+   "      if (ref) { var rf = ctx.measureText(ref[0]), rl = ctx.measureText(ref[ref.length - 1]); size = vw * 100 / (ctx.measureText(ref.slice(0, -1)).width - 6 * (ref.length - 1) + rl.actualBoundingBoxRight + rf.actualBoundingBoxLeft); }\n" \
    "      var capM = parseFloat(box.getAttribute('data-max-m'));                      // data-max-m: largest size on phones, so page titles stay modest there\n" \
    "      var capped = capM && vw <= 760 && size > capM; if (capped) size = capM;\n"],
   ["      var pad = box.hasAttribute('data-pad') ? vw * 0.0195 : 0; ", "      var pad = box.hasAttribute('data-pad') ? vw * 0.0195 : (capped ? 16 : 0); "],
@@ -326,9 +328,9 @@ def paras(text, extra = '')
   text.split(/ {2,}/).map { |t| %(<p class="body-copy#{extra}">#{nowidow(esc(t.strip))}</p>) }
 end
 
-def wordmark(title)
+def wordmark(title, ref = nil)
   chars = title.chars.map { |c| %(<span class="ch">#{c == ' ' ? '&nbsp;' : esc(c)}</span>) }.join
-  %(<h1 class="wmbox" data-max-m="54" aria-label="#{esc(title)}"><span class="wm" aria-hidden="true">#{chars}<i class="bl"></i></span></h1>)
+  %(<h1 class="wmbox" data-max-m="54"#{ref ? %( data-ref="#{esc(ref)}") : ''} aria-label="#{esc(title)}"><span class="wm" aria-hidden="true">#{chars}<i class="bl"></i></span></h1>)
 end
 
 # two pictures side by side, cropped to the same shape so they line up
@@ -783,7 +785,7 @@ contact = <<~HTML
 
   <main id="top">
     <section class="hero">
-      #{wordmark('Contact')}
+      #{wordmark('Contact', 'Agency + Client Work')}
     </section>
 
     <section class="intro ident" data-reveal>

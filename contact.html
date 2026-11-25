@@ -391,7 +391,7 @@
 
 <main id="top">
   <section class="hero">
-    <h1 class="wmbox" data-max-m="54" aria-label="Contact"><span class="wm" aria-hidden="true"><span class="ch">C</span><span class="ch">o</span><span class="ch">n</span><span class="ch">t</span><span class="ch">a</span><span class="ch">c</span><span class="ch">t</span><i class="bl"></i></span></h1>
+    <h1 class="wmbox" data-max-m="54" data-ref="Agency + Client Work" aria-label="Contact"><span class="wm" aria-hidden="true"><span class="ch">C</span><span class="ch">o</span><span class="ch">n</span><span class="ch">t</span><span class="ch">a</span><span class="ch">c</span><span class="ch">t</span><i class="bl"></i></span></h1>
   </section>
 
   <section class="intro ident" data-reveal>
@@ -483,6 +483,8 @@
       var ink = span + last.actualBoundingBoxRight + first.actualBoundingBoxLeft;   // width of the ink at 100px
       var vw = document.documentElement.clientWidth;
       var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span
+      var ref = box.getAttribute('data-ref');                                    // data-ref: size the title as if it read this text (Contact matches Agency + Client Work)
+      if (ref) { var rf = ctx.measureText(ref[0]), rl = ctx.measureText(ref[ref.length - 1]); size = vw * 100 / (ctx.measureText(ref.slice(0, -1)).width - 6 * (ref.length - 1) + rl.actualBoundingBoxRight + rf.actualBoundingBoxLeft); }
       var capM = parseFloat(box.getAttribute('data-max-m'));                      // data-max-m: largest size on phones, so page titles stay modest there
       var capped = capM && vw <= 760 && size > capM; if (capped) size = capM;
       var pad = box.hasAttribute('data-pad') ? vw * 0.0195 : (capped ? 16 : 0);                  // data-pad: line up with the page margin instead of the very edge
