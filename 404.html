@@ -820,11 +820,13 @@
 .shot:has(> .badge) { overflow: hidden; isolation: isolate; }   /* the sticker never shows outside its picture, even while the rows slide over each other */
 .shot > .badge { position: absolute; left: 2.5%; top: 18%; width: 31%; aspect-ratio: 1; z-index: 1; pointer-events: none;   /* blue wavy seal with the sticker inside, top left */
                  display: grid; place-items: center; }
-.shot > .badge::before { content: ""; position: absolute; inset: 0; background: url('images/badges/scallop-light.svg') center / contain no-repeat; z-index: -1; }
+.shot > .badge::before, .shot > .badge::after { content: ""; position: absolute; inset: 0; background: url('images/badges/scallop-light.svg') center / contain no-repeat; z-index: -1; }
+.shot > .badge::after { background-image: url('images/badges/scallop.svg'); z-index: -2; }   /* royal blue copy behind, swaying the other way */
 .shot > .badge img { position: relative; width: 60%; height: auto; display: block; transform: translateX(2%); }
-.shot > .badge::before { animation: sway 2.2s cubic-bezier(.65, 0, .35, 1) infinite alternate; transform-origin: 50% 50%; }   /* only the blue shape rocks back and forth; the sticker stays still */
+.shot > .badge::before, .shot > .badge::after { animation: sway 1.6s cubic-bezier(.65, 0, .35, 1) infinite alternate; transform-origin: 50% 50%; }
+.shot > .badge::after { animation-direction: alternate-reverse; }   /* only the blue shape rocks back and forth; the sticker stays still */
 @keyframes sway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
-@media (prefers-reduced-motion: reduce) { .shot > .badge::before { animation: none; } }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
+@media (prefers-reduced-motion: reduce) { .shot > .badge::before, .shot > .badge::after { animation: none; } }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
 <script>
 (function () {
   var vids = document.querySelectorAll('video[data-auto]');
