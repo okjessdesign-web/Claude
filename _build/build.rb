@@ -294,14 +294,14 @@ PREVIEW = {
 }
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
-# award stickers laid over a project's preview (middle left)
-BADGE = { 'noko-blind-box' => %(<img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention">) }
-def preview_shot(slug, cls = 'shot', max = 1024)
+# award sticker on a black box, top left of the project's preview (homepage only)
+BADGE = { 'noko-blind-box' => %(<span class="badge"><img src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention"></span>) }   # homepage only
+def preview_shot(slug, cls = 'shot', max = 1024, badge = false)
   kind, id, w, h = PREVIEW[slug]
   r = w.to_f / h
   shape = cls.include?('hero-media') && r > LANDSCAPE ? "; aspect-ratio:#{format('%.3f', r)}; height:auto" : ''   # landscape top picture: its own shape, not cropped
   if kind == :video
-    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}#{BADGE[slug]}</div>)
+    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}#{badge ? BADGE[slug] : ''}</div>)
   else
     %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')#{shape}"></div>)
   end
@@ -310,7 +310,8 @@ end
 # Videos play only while on screen, so the page doesn't download all of them at once
 VIDEO_JS = <<~H
   <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .shot > .badge { position: absolute; top: 50%; left: 4%; width: 22%; height: auto; transform: translateY(-50%); z-index: 1; pointer-events: none; }</style>
+  .shot > .badge { position: absolute; top: 0; left: 0; width: 38%; padding: 3.2% 3.6%; background: #000; z-index: 1; pointer-events: none; }   /* black box over SEASIDE, sticker on top */
+  .shot > .badge img { display: block; width: 100%; height: auto; }</style>
   <script>
   (function () {
     var vids = document.querySelectorAll('video[data-auto]');
@@ -698,7 +699,7 @@ def trail_videos(home)
 end
 
 # Homepage: project pictures load from Framer too (same photos as before)
-home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\)"></div>}) { LOCAL_THUMB[$1] ? preview_shot(LOCAL_THUMB[$1]) : $& }
+home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\)"></div>}) { LOCAL_THUMB[$1] ? preview_shot(LOCAL_THUMB[$1], 'shot', 1024, true) : $& }
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 home = trail_videos(home)

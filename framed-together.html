@@ -429,7 +429,7 @@
     <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>
     <div class="g more">
       <a class="work" href="noko-blind-box.html">
-        <div class="shot" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video><img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention"></div>
+        <div class="shot" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
         <span class="t">Noko Blind Box</span>
         <span class="tags"><span>Packaging</span><span>Branding</span><span>Storytelling</span></span>
       </a>
@@ -893,7 +893,8 @@
   })();
 </script>
 <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.shot > .badge { position: absolute; top: 50%; left: 4%; width: 22%; height: auto; transform: translateY(-50%); z-index: 1; pointer-events: none; }</style>
+.shot > .badge { position: absolute; top: 0; left: 0; width: 38%; padding: 3.2% 3.6%; background: #000; z-index: 1; pointer-events: none; }   /* black box over SEASIDE, sticker on top */
+.shot > .badge img { display: block; width: 100%; height: auto; }</style>
 <script>
 (function () {
   var vids = document.querySelectorAll('video[data-auto]');

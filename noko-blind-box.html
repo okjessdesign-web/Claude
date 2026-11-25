@@ -390,7 +390,7 @@
   <section class="hero">
     <h1 class="wmbox" data-max-m="54" aria-label="Noko Blind Box"><span class="wm" aria-hidden="true"><span class="ch">N</span><span class="ch">o</span><span class="ch">k</span><span class="ch">o</span><span class="ch">&nbsp;</span><span class="ch">B</span><span class="ch">l</span><span class="ch">i</span><span class="ch">n</span><span class="ch">d</span><span class="ch">&nbsp;</span><span class="ch">B</span><span class="ch">o</span><span class="ch">x</span><i class="bl"></i></span></h1>
     <!-- Placeholder for an image or video: replace the contents with <img src="..."> or <video src="..." autoplay muted loop playsinline></video> -->
-    <div class="hero-media shot arrow-zone" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024'); aspect-ratio:1.778; height:auto"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video><img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention"></div>
+    <div class="hero-media shot arrow-zone" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024'); aspect-ratio:1.778; height:auto"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
   </section>
 
   <section class="intro ident" data-reveal>
@@ -895,7 +895,8 @@
   })();
 </script>
 <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.shot > .badge { position: absolute; top: 50%; left: 4%; width: 22%; height: auto; transform: translateY(-50%); z-index: 1; pointer-events: none; }</style>
+.shot > .badge { position: absolute; top: 0; left: 0; width: 38%; padding: 3.2% 3.6%; background: #000; z-index: 1; pointer-events: none; }   /* black box over SEASIDE, sticker on top */
+.shot > .badge img { display: block; width: 100%; height: auto; }</style>
 <script>
 (function () {
   var vids = document.querySelectorAll('video[data-auto]');
