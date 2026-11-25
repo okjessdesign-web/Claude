@@ -502,7 +502,8 @@ TILES = [
   [42,  96, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union + Kawartha',
     'Business campaign collateral: more than 100 animated and static ads for YouTube, Instagram, LinkedIn and Meta.'],
   [72, 100, 20, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater',
-    'Patches and icons for sleep masks, cowboy hats and drinkware, made for a Nashville retreat with the Kansas City Chiefs.'],
+    'Patches and icons for sleep masks, cowboy hats and drinkware, made for a Nashville retreat with the Kansas City Chiefs.',
+    'Salt XC, with Randy Wescott'],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
