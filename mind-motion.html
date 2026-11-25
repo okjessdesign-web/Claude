@@ -316,6 +316,8 @@
   /* ===== Added for the other project pages ===== */
   .body-copy + .body-copy { margin-top: 1.1em; }   /* paragraphs that follow each other get a gap */
   h1.wmbox .ch { transition-delay: var(--d, 0ms); }   /* page titles rise as one piece, not letter by letter */
+  .hero.pt { padding-top: 200px; padding-bottom: 5vw; }   /* Contact + Agency titles: more room above and below */
+  @media (max-width: 760px) { .hero.pt { padding-top: 140px; padding-bottom: 36px; } }
   /* pictures and videos run to the edges of the screen (small gap kept between paired pictures) */
   .hero-media { margin-left: 0; margin-right: 0; }
   .g { padding-left: 0; padding-right: 0; }
@@ -951,7 +953,9 @@
         visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .7s cubic-bezier(.76, 0, .24, 1), visibility 0s .7s; }
   .mm.open { visibility: visible; clip-path: inset(0 0 0 0); transition: clip-path .7s cubic-bezier(.76, 0, .24, 1); }
   .mm-top { display: flex; justify-content: space-between; align-items: center; min-height: 42px; }
-  .mm-top .logo { width: 36px; height: 36px; }
+  .mm-top { position: relative; }
+  .mm-top .logo { position: absolute; width: 42px; height: 42px; }   /* placed by script exactly over the header logo, so it never changes size */
+  .mm-x { position: absolute; right: 0; }
   .mm-x { border: 0; background: none; padding: 8px; margin: -8px; color: var(--fg); cursor: pointer; }
   .mm-x svg { display: block; width: 20px; height: 20px; }
   .mm-list { margin-top: auto; border-top: var(--hair); }
@@ -982,7 +986,14 @@
   mm.innerHTML = top + '<nav class="mm-list">' + list + '</nav>' +
     '<div class="mm-foot"><a href="mailto:hello@okjess.com">hello@okjess.com</a><a href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener">Instagram</a></div>';
   document.body.appendChild(mm);
+  function place() {                                    // line the menu's logo and x up with the header's logo and Menu button
+    var hl = logo && logo.getBoundingClientRect(), hb = btn.getBoundingClientRect(), mt = mm.querySelector('.mm-top');
+    var base = mt.getBoundingClientRect(), ml = mm.querySelector('.mm-top .logo'), mx = mm.querySelector('.mm-x');
+    if (hl && ml) { ml.style.left = (hl.left - base.left) + 'px'; ml.style.top = (hl.top - base.top) + 'px'; ml.style.width = hl.width + 'px'; ml.style.height = hl.height + 'px'; }
+    if (mx) { var xr = mx.getBoundingClientRect(); mx.style.top = (hb.top + hb.height / 2 - base.top - xr.height / 2 - parseFloat(getComputedStyle(mx).marginTop)) + 'px'; }
+  }
   function setOpen(open) {
+    if (open) place();
     mm.classList.toggle('open', open); mm.setAttribute('aria-hidden', open ? 'false' : 'true');
     document.documentElement.classList.toggle('mm-on', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
