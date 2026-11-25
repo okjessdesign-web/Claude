@@ -295,7 +295,7 @@ PREVIEW = {
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
 # award sticker in a blue wavy seal, top left of the project's preview (homepage only)
-BADGE = { 'noko-blind-box' => %(<span class="badge"><img src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention"></span>) }   # homepage only
+BADGE = { 'noko-blind-box' => %(<span class="badge"><img src="images/badges/rgd-2026-honourable-mention-flame.png" alt="RGD 2026 Student Awards, Honourable Mention"></span>) }   # homepage only
 def preview_shot(slug, cls = 'shot', max = 1024, badge = false)
   kind, id, w, h = PREVIEW[slug]
   r = w.to_f / h
@@ -312,7 +312,7 @@ VIDEO_JS = <<~H
   <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .shot:has(> .badge) { overflow: hidden; isolation: isolate; }   /* the sticker never shows outside its picture, even while the rows slide over each other */
   .shot > .badge { position: absolute; left: 2.5%; top: 18%; width: 31%; aspect-ratio: 1; z-index: 1; pointer-events: none;   /* blue wavy seal with the sticker inside, top left */
-                   background: url('images/badges/scallop.svg') center / contain no-repeat; display: grid; place-items: center; }
+                   background: url('images/badges/scallop-light.svg') center / contain no-repeat; display: grid; place-items: center; }
   .shot > .badge img { width: 60%; height: auto; display: block; transform: translateX(2%); }   /* the sticker, over the SEASIDE corner */   /* the sticker, on top */</style>
   <script>
   (function () {
