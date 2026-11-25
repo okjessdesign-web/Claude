@@ -686,7 +686,13 @@ puts "agency-client-work.html  #{acw.bytesize / 1024} KB"
 
 # Homepage hover trail: only the animated projects, playing live (replaces the trail's image list and spawn step)
 TRAIL_ITEMS_JS = File.read(File.join(__dir__, 'trail_items.js'), encoding: 'UTF-8')
+TRAIL_AUTO_JS = File.read(File.join(__dir__, 'trail_auto.js'), encoding: 'UTF-8')   # phones: the trail plays by itself
 def trail_videos(home)
+  home = home.sub("    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;  // mouse/trackpad only\n") {
+    "    var touch = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;   // phones + tablets: the trail plays by itself (below)\n" } or abort 'trail touch'
+  mm = "    document.addEventListener('mousemove', function (e) {\n      var hr = hero.getBoundingClientRect()"
+  home.include?(mm) or abort 'trail mousemove'
+  home = home.sub(mm) { TRAIL_AUTO_JS + mm }
   a = home.index("    // The images and titles come from the Selected Works list below") or abort 'trail items'
   b = home.index("    var ratios = ", a) or abort 'trail ratios'
   home = home[0...a] + TRAIL_ITEMS_JS.sub("    items.forEach(master);                           // warm up all three as soon as the trail is first used (see below)\n", '') + home[b..-1]
