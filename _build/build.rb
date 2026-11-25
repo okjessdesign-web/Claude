@@ -294,12 +294,14 @@ PREVIEW = {
 }
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
+# award stickers laid over a project's preview (top middle)
+BADGE = { 'noko-blind-box' => %(<img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention">) }
 def preview_shot(slug, cls = 'shot', max = 1024)
   kind, id, w, h = PREVIEW[slug]
   r = w.to_f / h
   shape = cls.include?('hero-media') && r > LANDSCAPE ? "; aspect-ratio:#{format('%.3f', r)}; height:auto" : ''   # landscape top picture: its own shape, not cropped
   if kind == :video
-    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}</div>)
+    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}#{BADGE[slug]}</div>)
   else
     %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')#{shape}"></div>)
   end
@@ -307,7 +309,8 @@ end
 
 # Videos play only while on screen, so the page doesn't download all of them at once
 VIDEO_JS = <<~H
-  <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }</style>
+  <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .shot > .badge { position: absolute; top: 6%; left: 50%; width: 30%; height: auto; transform: translateX(-50%); z-index: 1; pointer-events: none; }</style>
   <script>
   (function () {
     var vids = document.querySelectorAll('video[data-auto]');
