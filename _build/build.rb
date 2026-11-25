@@ -468,19 +468,41 @@ end
 # [left %, top vw, width vw, aspect ratio (w/h), title, description]   Swap the placeholder text, and set a picture with --img in the style when ready.
 LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 TILES = [
-  # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description]
-  [ 4,   4, 35, 'powerade-tent.jpg',          1544, 1057, 'Powerade Power Water'],
-  [44,   8, 20, 'powerade-sign.jpg',           740,  720, 'Powerade Power Water'],
-  [67,   2, 31, 'cutwater-wristbands.jpg',    1564, 1134, 'Cutwater'],
-  [ 8,  34, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's Real PB&Js"],
-  [28,  38, 34, 'tresemme.jpg',               2000, 1127, 'TRESemmé'],
-  [68,  28, 24, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.'],
-  [ 4,  63, 30, 'saturn-character-sheet.jpg', 2400, 1175, 'SATurn'],
-  [37,  65, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.'],
-  [71,  56, 21, 'good-company-halloween.jpg',  920, 1654, 'Good Company Productions'],
-  [10,  92, 24, 'ready-force.jpg',            1066,  888, 'Ready Force'],
-  [42,  96, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union'],
-  [72, 100, 20, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater'],
+  # [left %, top vw, width vw, picture (in images/agency), width px, height px, title, description, credit]
+  [ 4,   4, 35, 'powerade-tent.jpg',          1544, 1057, 'Powerade Power Water',
+    'Experiential design for the Powerade Power Water pop-up, launching its sugar-free electrolyte drinks. Included the full tent design, signage and staff uniforms.',
+    'Salt XC, with Rob Simone and Graham Nhlamba (oversight)'],
+  [44,   8, 20, 'powerade-sign.jpg',           740,  720, 'Powerade Power Water',
+    'Signage for the Powerade Power Water pop-up.',
+    'Salt XC'],
+  [67,   2, 31, 'cutwater-wristbands.jpg',    1564, 1134, 'Cutwater x Lollapalooza',
+    'Drink entry wristbands for Cutwater at Lollapalooza.',
+    'Salt XC, independent work'],
+  [ 8,  34, 15, 'welchs-mixed-fruit.jpg',      580,  870, "Welch's PB&J",
+    "Hand-built more than 100 print and web ads for the launch of Welch's new PB&J sandwiches.",
+    'Salt XC, with Graham Nhlamba'],
+  [28,  38, 34, 'tresemme.jpg',               2000, 1127, 'TRESemmé',
+    'Shelf lips and signage for TRESemmé Rich Moisture shampoo and conditioner.',
+    'Salt XC, with Rob Simone and Emma Mikelberg'],
+  [68,  28, 24, 'liquid-iv-kiosk.jpg',        1069,  973, 'Liquid I.V.',
+    'Experiential pop-up for Liquid I.V. at the FVDED in the Park music festival.',
+    'Salt XC, with Emma Mikelberg and Rob Simone'],
+  [ 4,  63, 30, 'saturn-character-sheet.jpg', 2400, 1175, 'Saturn Studio',
+    'Character sheet for a sandbox-style audio game.',
+    'Client work'],
+  [37,  65, 30, 'liquid-iv-booth-render.jpg', 1714, 1124, 'Liquid I.V.',
+    'Experiential pop-up for Liquid I.V. at RBC Amphitheatre.',
+    'Salt XC, with Emma Mikelberg and Rob Simone'],
+  [71,  56, 21, 'good-company-halloween.jpg',  920, 1654, 'Good Co Productions',
+    "Poster for Good Co Productions' Halloween costume party and concert.",
+    'Client work'],
+  [10,  92, 24, 'ready-force.jpg',            1066,  888, 'Readyforce',
+    'Collateral spanning brochures, postcards, business cards, emails, animations, and animated intros and outros.',
+    'TBK Creative, with Simon Dunford'],
+  [42,  96, 20, 'libro.jpg',                   938, 1174, 'Libro Credit Union + Kawartha',
+    'Business campaign collateral: more than 100 animated and static ads for YouTube, Instagram, LinkedIn and Meta.'],
+  [72, 100, 20, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater',
+    'Patches and icons for sleep masks, cowboy hats and drinkware, made for a Nashville retreat with the Kansas City Chiefs.'],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
@@ -503,6 +525,7 @@ ACW_CSS = <<CSS
   .ft.on .cap { opacity: 1; transform: none; transition-delay: .15s; }
   .ft .cap b { display: block; font-family: var(--label); font-weight: 500; text-transform: uppercase; font-size: 14px; color: var(--ink); }
   .ft .cap p { margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--fg); }
+  .ft .cap p.cr { margin-top: 8px; font-size: 11px; color: var(--ink); text-transform: uppercase; letter-spacing: .02em; }   /* agency + collaborators */
   .field.has-on .ft:not(.on) { opacity: .35; }
   @keyframes drift { from { translate: 0 0; } to { translate: var(--dx) var(--dy); } }
   @media (prefers-reduced-motion: reduce) { .ft { animation: none; } }
@@ -519,7 +542,7 @@ ACW_CSS = <<CSS
   }
 CSS
 
-tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc), i|
+tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc, credit), i|
   ar = pw.to_f / ph
   right = l + w / 2 > 50                                       # captions on right-hand tiles line up with the tile's right edge
   ox = l < 12 ? '0%' : (l + w > 88 ? '100%' : '50%')           # tiles near an edge grow inward so they stay on screen
@@ -528,7 +551,7 @@ tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc), i|
   <<~H.chomp
         <div class="ft#{right ? ' r' : ''}" style="#{style}">
           <div class="pic" style="background-image:url('images/agency/#{pic}')" role="img" aria-label="#{esc(title)}"></div>
-          <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM)}</p></div>
+          <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM)}</p>#{credit ? "<p class=\"cr\">#{esc(credit)}</p>" : ''}</div>
         </div>
   H
 end.join("\n")
