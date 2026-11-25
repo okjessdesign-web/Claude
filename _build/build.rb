@@ -945,3 +945,62 @@ nf = <<~HTML
 HTML
 File.write(File.join(SITE, '404.html'), arrows(nf))
 puts "404.html  #{nf.bytesize / 1024} KB"
+
+# ===== SEO: a title, description, link preview and canonical address for each page; plus sitemap.xml and robots.txt =====
+DOMAIN = 'https://okjess.com/'
+NAME = 'Jessica Baker'
+SEO = {
+  'index' => ["Okjess | #{NAME}, Graphic Designer in Toronto",
+              "#{NAME} (Okjess) is an independent graphic designer in Toronto, Canada, working in branding, packaging, motion, editorial and experiential design.",
+              'images/noko-blind-box.jpg'],
+  'agency-client-work' => ["Agency + Client Work | Okjess",
+              "Agency and client work by #{NAME}: experiential pop-ups, signage, packaging, ads and campaigns for Powerade, Liquid I.V., Cutwater, Welch's, TRESemmé and more.",
+              'images/agency/powerade-tent.jpg'],
+  'contact' => ["Contact | Okjess",
+              "Get in touch with #{NAME}, an independent graphic designer in Toronto. Now booking projects for 2027.",
+              'images/noko-blind-box.jpg'],
+  '404' => ['Page not found | Okjess', "#{NAME} (Okjess), graphic designer in Toronto.", 'images/noko-blind-box.jpg'],
+}
+P.each do |slug, p|
+  about = p[:about].to_s.gsub(/\s+/, ' ').strip
+  desc = about.length > 155 ? about[0, 152].sub(/\s+\S*\z/, '') + '…' : about
+  SEO[slug] = ["#{p[:title]}: #{p[:tags].join(', ')} | Okjess", desc, p[:thumb]]
+end
+
+def seo_head(slug, title, desc, img)
+  url = slug == 'index' ? DOMAIN : "#{DOMAIN}#{slug}.html"
+  tags = [%(<link rel="canonical" href="#{url}">),
+          %(<meta property="og:url" content="#{url}">),
+          %(<meta property="og:site_name" content="Okjess">),
+          %(<meta property="og:image" content="#{img.start_with?("http") ? img : DOMAIN + img}">),
+          %(<meta name="twitter:card" content="summary_large_image">),
+          %(<meta name="author" content="#{NAME}">)]
+  tags << %(<meta name="robots" content="noindex">) if slug == '404'
+  if slug == 'index'
+    ld = { '@context' => 'https://schema.org', '@type' => 'Person', 'name' => NAME, 'alternateName' => 'Okjess',
+           'jobTitle' => 'Graphic Designer', 'url' => DOMAIN, 'email' => 'mailto:hello@okjess.com',
+           'address' => { '@type' => 'PostalAddress', 'addressLocality' => 'Toronto', 'addressRegion' => 'ON', 'addressCountry' => 'CA' },
+           'sameAs' => ['https://www.instagram.com/okjessdesign/'] }
+    require 'json'
+    tags << %(<script type="application/ld+json">#{JSON.generate(ld)}</script>)
+  end
+  tags.join("\n") + "\n"
+end
+
+SEO.each do |slug, (title, desc, img)|
+  f = File.join(SITE, "#{slug}.html")
+  s = File.read(f, encoding: 'UTF-8')
+  s = s.sub(%r{<title>.*?</title>}m) { "<title>#{esc(title)}</title>" }
+       .sub(/(<meta name="description" content=")[^"]*/) { $1 + esc(desc) }
+       .sub(/(<meta property="og:title" content=")[^"]*/) { $1 + esc(title) }
+       .sub(/(<meta property="og:description" content=")[^"]*/) { $1 + esc(desc) }
+  s = s.sub('</head>') { seo_head(slug, title, desc, img) + '</head>' } unless s.include?('rel="canonical"')
+  File.write(f, s)
+end
+
+pages = SEO.keys - ['404']
+File.write(File.join(SITE, 'sitemap.xml'),
+  %(<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n) +
+  pages.map { |s| "  <url><loc>#{s == 'index' ? DOMAIN : "#{DOMAIN}#{s}.html"}</loc></url>" }.join("\n") + "\n</urlset>\n")
+File.write(File.join(SITE, 'robots.txt'), "User-agent: *\nAllow: /\nDisallow: /index_1.html\nDisallow: /noko-blind-box_1.html\nDisallow: /_build/\n\nSitemap: #{DOMAIN}sitemap.xml\n")
+puts 'SEO tags, sitemap.xml, robots.txt'

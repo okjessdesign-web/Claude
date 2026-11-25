@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /index_1.html
+Disallow: /noko-blind-box_1.html
+Disallow: /_build/
+
+Sitemap: https://okjess.com/sitemap.xml
