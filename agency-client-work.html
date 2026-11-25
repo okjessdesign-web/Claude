@@ -238,8 +238,9 @@
   .cursor.on { opacity: 1; }
   .cursor .dot { transition: background-color .2s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }
   .cursor.mag .dot { transform: scale(1.7); }          /* over something clickable: the dot grows slightly */
-  .links a, .f-info a, .whead a, .ct-mail, .nf a { position: relative; }
-  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after { content: ""; position: absolute; inset: -8px -6px; }   /* a slightly bigger area to click */
+  .links a, .f-info a, .whead a, .ct-mail, .nf a, .nbtn, .pill { position: relative; }
+  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after, .nbtn::after, .pill::after { content: ""; position: absolute; inset: -16px -12px; }   /* a bigger area to click, so the lock-on never slips off */
+  .pill::after { inset: -10px; }
   .cursor .dot { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: var(--logo); transition: background-color .2s ease; }
   .cursor.red .dot { background: #f1efe9; }              /* over red: the dot takes the background colour */
   /* over a project image: a plain, crisp arrow (no growing animation) */
@@ -755,15 +756,19 @@
       tx = px; ty = py;
       var m = (!inWorks && el && el.closest) ? el.closest('a:not(.work), button, label, input, textarea, select') : null;
       if (m && m.closest('.shot, .lb')) m = null;
+      if (!m && mag && !inWorks && !mag.matches('label, input, textarea, select')) {   // sticky: stay locked until the pointer is clearly past the link
+        var sr = mag.getBoundingClientRect(); if (px > sr.left - 10 && px < sr.right + 10 && py > sr.top - 10 && py < sr.bottom + 10) m = mag;
+      }
       if (m !== mag) { mag = m; cursor.classList.toggle('mag', !!m); }
       if (m && !m.matches('label, input, textarea, select')) {   // fields only get the little grow, no pull
         var mr = m.getBoundingClientRect();
-        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.32; ty = py + (mr.top + mr.height / 2 - py) * 0.32; }
+        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.62; ty = py + (mr.top + mr.height / 2 - py) * 0.62; }
       }
     }
     function frame(t) {
       var dt = Math.min(64, t - (last || t)); last = t;
       var k = 1 - Math.exp(-dt / TAU);              // same delay on any screen speed
+      if (mag) k = 1 - Math.exp(-dt / (TAU * 0.45));   // locked on: the dot settles onto the link quickly
       cx += (tx - cx) * k; cy += (ty - cy) * k;
       cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
       requestAnimationFrame(frame);

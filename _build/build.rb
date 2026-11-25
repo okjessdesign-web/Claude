@@ -23,19 +23,23 @@ PATCHES = [
    "      tx = px; ty = py;\n" \
    "      var m = (!inWorks && el && el.closest) ? el.closest('a:not(.work), button, label, input, textarea, select') : null;\n" \
    "      if (m && m.closest('.shot, .lb')) m = null;\n" \
+   "      if (!m && mag && !inWorks && !mag.matches('label, input, textarea, select')) {   // sticky: stay locked until the pointer is clearly past the link\n" \
+   "        var sr = mag.getBoundingClientRect(); if (px > sr.left - 10 && px < sr.right + 10 && py > sr.top - 10 && py < sr.bottom + 10) m = mag;\n" \
+   "      }\n" \
    "      if (m !== mag) { mag = m; cursor.classList.toggle('mag', !!m); }\n" \
    "      if (m && !m.matches('label, input, textarea, select')) {   // fields only get the little grow, no pull\n" \
    "        var mr = m.getBoundingClientRect();\n" \
-   "        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.32; ty = py + (mr.top + mr.height / 2 - py) * 0.32; }\n" \
+   "        if (mr.width < 420 && mr.height < 140) { tx = px + (mr.left + mr.width / 2 - px) * 0.62; ty = py + (mr.top + mr.height / 2 - py) * 0.62; }\n" \
    "      }\n"],
   ["      cx += (px - cx) * k; cy += (py - cy) * k;\n",
+   "      if (mag) k = 1 - Math.exp(-dt / (TAU * 0.45));   // locked on: the dot settles onto the link quickly\n" \
    "      cx += (tx - cx) * k; cy += (ty - cy) * k;\n"],
   ["  .cursor.on { opacity: 1; }\n",
    "  .cursor.on { opacity: 1; }\n" \
    "  .cursor .dot { transition: background-color .2s ease, transform .35s cubic-bezier(.2, .7, .2, 1); }\n" \
    "  .cursor.mag .dot { transform: scale(1.7); }          /* over something clickable: the dot grows slightly */\n" \
-   "  .links a, .f-info a, .whead a, .ct-mail, .nf a { position: relative; }\n" \
-   "  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after { content: \"\"; position: absolute; inset: -8px -6px; }   /* a slightly bigger area to click */\n"],
+   "  .links a, .f-info a, .whead a, .ct-mail, .nf a, .nbtn, .pill { position: relative; }\n" \
+   "  .links a::after, .f-info a::after, .whead a::after, .ct-mail::after, .nf a::after, .nbtn::after, .pill::after { content: \"\"; position: absolute; inset: -16px -12px; }   /* a bigger area to click, so the lock-on never slips off */\n  .pill::after { inset: -10px; }\n"],
   ["      btn.textContent = open ? 'Close' : 'Menu';\n",
    "      if (open) btn.innerHTML = '<svg class=\"xic\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.1\" aria-hidden=\"true\"><path d=\"M3.5 3.5l13 13M16.5 3.5l-13 13\"/></svg>'; else btn.textContent = 'Menu';\n" \
    "      btn.classList.toggle('x', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');\n"],
