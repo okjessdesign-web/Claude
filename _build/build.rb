@@ -5,6 +5,9 @@ CDN  = 'https://framerusercontent.com/images/'
 
 # Changes applied to both the homepage and the project-page template (shared CSS and scripts)
 PATCHES = [
+  # phones: projects stack one per row, so draw a line between every project (before, one only showed after every second project)
+  ["    .row, .row.flip { position: static; grid-template-columns: 1fr; row-gap: 28px; padding: 20px var(--pad) 28px; }\n",
+   "    .row, .row.flip { position: static; grid-template-columns: 1fr; row-gap: 28px; padding: 20px var(--pad) 28px; }\n    .row > .work + .work { border-top: var(--hair); padding-top: 20px; }\n"],
   ["      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n",
    "      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n" \
    "      var ref = box.getAttribute('data-ref');                                    // data-ref: size the title as if it read this text (Contact matches Agency + Client Work)\n" \
