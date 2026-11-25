@@ -85,7 +85,9 @@ ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentCo
 MOBILE_MENU = File.read(File.join(__dir__, 'mobilemenu.html'), encoding: 'UTF-8')   # phones + tablets: full-screen menu page
 SPIN_JS = File.read(File.join(__dir__, 'spin.html'), encoding: 'UTF-8')   # cursor easter egg: circle the mouse and it becomes the spinning logo
 MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
+ICONS = %(<link rel="icon" href="favicon.svg" type="image/svg+xml">\n<link rel="icon" href="apple-touch-icon.png" type="image/png" sizes="180x180">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n)   # tab icon = the asterisk logo
 def arrows(s)
+  s = s.sub('</head>') { ICONS + '</head>' } unless s.include?('favicon.svg')
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
