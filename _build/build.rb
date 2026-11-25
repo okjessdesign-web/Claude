@@ -83,6 +83,7 @@ PATCHES = [
 ]
 ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
 MOBILE_MENU = File.read(File.join(__dir__, 'mobilemenu.html'), encoding: 'UTF-8')   # phones + tablets: full-screen menu page
+SOUNDS_JS = File.read(File.join(__dir__, 'sounds.html'), encoding: 'UTF-8')   # soft hover ticks and click pops
 SPIN_JS = File.read(File.join(__dir__, 'spin.html'), encoding: 'UTF-8')   # cursor easter egg: circle the mouse and it becomes the spinning logo
 MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
 ICONS = %(<link rel="icon" href="favicon.svg" type="image/svg+xml">\n<link rel="icon" href="apple-touch-icon.png" type="image/png" sizes="180x180">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n)   # tab icon = the asterisk logo
@@ -92,7 +93,7 @@ def arrows(s)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
    .sub('<li><a href="#contact">Contact</a></li>', '<li><a href="contact.html">Contact</a></li>')
-   .sub('</body>') { VIDEO_JS + SPIN_JS + MOBILE_MENU + '</body>' }   # Info taken out of the menu
+   .sub('</body>') { VIDEO_JS + SPIN_JS + MOBILE_MENU + SOUNDS_JS + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
