@@ -295,7 +295,7 @@ PREVIEW = {
 def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
 # award sticker on a black box, top left of the project's preview (homepage only)
-BADGE = { 'noko-blind-box' => %(<span class="badge"><img src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention"></span>) }   # homepage only
+BADGE = { 'noko-blind-box' => %(<span class="badge-box"></span><img class="badge" src="images/badges/rgd-2026-honourable-mention.png" alt="RGD 2026 Student Awards, Honourable Mention">) }   # homepage only
 def preview_shot(slug, cls = 'shot', max = 1024, badge = false)
   kind, id, w, h = PREVIEW[slug]
   r = w.to_f / h
@@ -310,8 +310,8 @@ end
 # Videos play only while on screen, so the page doesn't download all of them at once
 VIDEO_JS = <<~H
   <style>.shot > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .shot > .badge { position: absolute; top: 0; left: 0; width: 38%; padding: 3.2% 3.6%; background: #000; z-index: 1; pointer-events: none; }   /* black box over SEASIDE, sticker on top */
-  .shot > .badge img { display: block; width: 100%; height: auto; }</style>
+  .shot > .badge-box { position: absolute; left: 1%; top: 3.6%; width: 15%; height: 6.5%; background: #000; z-index: 1; pointer-events: none; }   /* tiny box that hides SEASIDE */
+  .shot > .badge { position: absolute; left: 3.5%; top: 4.5%; width: 36%; height: auto; z-index: 2; pointer-events: none; }   /* the sticker, on top */</style>
   <script>
   (function () {
     var vids = document.querySelectorAll('video[data-auto]');
