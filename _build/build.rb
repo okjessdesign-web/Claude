@@ -523,6 +523,9 @@ TILES = [
   [72, 100, 20, 'cutwater-patches.jpg',       1105, 1423, 'Cutwater',
     'Patches and icons for sleep masks, cowboy hats and drinkware, made for a Nashville retreat with the Kansas City Chiefs.',
     'Salt XC, with Randy Wescott'],
+  [14, 124, 22, 'whynot-pilot-cards.jpg',     1400, 1400, 'WHYNOT Run Club',
+    'Logo design for WHYNOT Run Club. Pictured: the WHYNOT x Pilot Coffee Roasters punch cards (cards not designed by me).',
+    'Client work'],
 ]
 TONES = %w[#c4c4c4 #bdbdbd #c9c9c9 #b8b8b8]
 field_h = TILES.map { |l, t, w, _, pw, ph| t + w * ph.to_f / pw }.max + 12
