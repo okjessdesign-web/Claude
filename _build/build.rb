@@ -798,7 +798,7 @@ contact = <<~HTML
         <h2 class="ct-head">Ambitious brands start with a&nbsp;conversation.</h2>
         <p class="body-copy ct-sub">Now booking projects for&nbsp;2027.</p>
         <div class="ct-pills">
-          <a class="pill" href="mailto:okjessdesign@gmail.com"><span>okjessdesign@gmail.com</span><span aria-hidden="true">&rarr;</span></a>
+          <a class="pill" href="mailto:hello@okjess.com"><span>hello@okjess.com</span><span aria-hidden="true">&rarr;</span></a>
           <a class="pill" href="https://www.instagram.com/okjessdesign/" target="_blank" rel="noopener"><span>Instagram</span><span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
