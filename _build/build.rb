@@ -751,6 +751,10 @@ CONTACT_CSS = <<CSS
   .ty p small { display: block; margin-top: 18px; font-family: var(--label); font-weight: 500; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
   .ty.show p { opacity: 1; transform: none; transition-delay: .45s; }
   html.ty-on .cursor .dot { background: var(--bg) !important; }
+  .ct-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* hidden spam trap */
+  .ct-form.sending .pill { opacity: .55; pointer-events: none; }
+  .ct-err { font-family: var(--mono); font-size: 11px; letter-spacing: .02em; text-transform: uppercase; color: var(--fg); margin-top: 14px; }
+  .ct-err a { text-decoration: underline; }
   @media (max-width: 760px) {
     .ct-form { grid-template-columns: 1fr; gap: 30px; }
     .ct-head { font-size: 26px; }
@@ -759,12 +763,14 @@ CSS
 
 CONTACT_JS = <<'JS'
 <script>
-// Contact form: for now nothing is sent (placeholder). On submit the page flips to red with a thank-you, then eases back.
+// Contact form: messages are sent through FormSubmit (formsubmit.co) and arrive at hello@okjess.com.
+// On success the page flips to red with a thank-you, then eases back. If sending fails, a short note shows under the button.
 (function () {
   var form = document.getElementById('ct-form'), ty = document.getElementById('ty'), root = document.documentElement;
   if (!form) return;
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+  var btn = form.querySelector('button[type="submit"]'), label = btn.querySelector('span'), err = document.getElementById('ct-err');
+  var ENDPOINT = 'https://formsubmit.co/ajax/hello@okjess.com';
+  function thanks() {
     root.classList.add('ty-on');
     ty.classList.remove('leave'); ty.classList.add('show'); ty.setAttribute('aria-hidden', 'false');
     setTimeout(function () {
@@ -772,6 +778,26 @@ CONTACT_JS = <<'JS'
       form.reset();
       setTimeout(function () { ty.classList.remove('leave'); ty.setAttribute('aria-hidden', 'true'); root.classList.remove('ty-on'); }, 1000);
     }, 3200);
+  }
+  function fail() {
+    err.hidden = false;
+    err.innerHTML = 'Sorry, that didn’t send. Please try again or email <a href="mailto:hello@okjess.com">hello@okjess.com</a>.';
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (form.classList.contains('sending')) return;
+    if (form.elements._honey.value) return;                           // a bot filled the hidden field
+    err.hidden = true;
+    form.classList.add('sending'); label.textContent = 'Sending';
+    var d = form.elements;
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name: d.name.value, email: d.email.value, message: d.message.value,
+                             _subject: 'New enquiry from okjess.com: ' + d.name.value, _template: 'table' })
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return r.ok && String(j.success) !== 'false'; }); })
+      .then(function (ok) { if (ok) thanks(); else fail(); }, fail)
+      .then(function () { form.classList.remove('sending'); label.textContent = 'Send'; });
   });
 })();
 </script>
@@ -812,6 +838,8 @@ contact = <<~HTML
         <label><span class="flab">Email</span><input name="email" type="email" autocomplete="email" required placeholder="you@email.com"></label>
         <label class="full"><span class="flab">Message</span><textarea name="message" rows="5" required placeholder="Tell me about your project"></textarea></label>
         <button class="pill" type="submit"><span>Send</span><span aria-hidden="true">&rarr;</span></button>
+        <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="ct-err full" id="ct-err" role="alert" hidden></p>
       </form>
     </section>
   </main>
