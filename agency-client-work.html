@@ -1009,7 +1009,7 @@
     while (hist.length && t - hist[0][0] > WINDOW) hist.shift();
     var sum = 0; hist.forEach(function (h) { sum += h[1]; });
     if (Math.abs(sum) > TURNS_ON * 2 * Math.PI) {
-      if (!on) { on = true; cursor.classList.add('spin'); if (!last) requestAnimationFrame(tick); }
+      if (!on) { on = true; cursor.classList.add('spin'); document.dispatchEvent(new CustomEvent('okjess:spin')); if (!last) requestAnimationFrame(tick); }
       vel = sum / (WINDOW / 1000);              // spin speed follows how fast you circle (radians per second)
       offT = t + 700;                           // stays a logo while you keep circling
     }
@@ -1122,6 +1122,12 @@
     tone(660, 880, 0, 0.09, 0.07, 'sine');
     tone(990, 1320, 0.055, 0.12, 0.05, 'sine');
   }
+  function sparkle() {                                             // the cursor turns into the spinning logo: a little twinkly rising run
+    if (!ctx || ctx.state !== 'running') return;
+    [1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f, f * 1.01, i * 0.055, 0.16, 0.045, 'triangle'); });
+    tone(3136, 2960, 0.24, 0.3, 0.02, 'sine');                       // tiny shimmer at the end
+  }
+  document.addEventListener('okjess:spin', sparkle);
   document.addEventListener('pointerover', function (e) {
     if (e.pointerType && e.pointerType !== 'mouse') return;
     var el = e.target.closest && e.target.closest(SEL);

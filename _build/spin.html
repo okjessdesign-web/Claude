@@ -30,7 +30,7 @@
     while (hist.length && t - hist[0][0] > WINDOW) hist.shift();
     var sum = 0; hist.forEach(function (h) { sum += h[1]; });
     if (Math.abs(sum) > TURNS_ON * 2 * Math.PI) {
-      if (!on) { on = true; cursor.classList.add('spin'); if (!last) requestAnimationFrame(tick); }
+      if (!on) { on = true; cursor.classList.add('spin'); document.dispatchEvent(new CustomEvent('okjess:spin')); if (!last) requestAnimationFrame(tick); }
       vel = sum / (WINDOW / 1000);              // spin speed follows how fast you circle (radians per second)
       offT = t + 700;                           // stays a logo while you keep circling
     }

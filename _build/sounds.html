@@ -33,6 +33,12 @@
     tone(660, 880, 0, 0.09, 0.07, 'sine');
     tone(990, 1320, 0.055, 0.12, 0.05, 'sine');
   }
+  function sparkle() {                                             // the cursor turns into the spinning logo: a little twinkly rising run
+    if (!ctx || ctx.state !== 'running') return;
+    [1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f, f * 1.01, i * 0.055, 0.16, 0.045, 'triangle'); });
+    tone(3136, 2960, 0.24, 0.3, 0.02, 'sine');                       // tiny shimmer at the end
+  }
+  document.addEventListener('okjess:spin', sparkle);
   document.addEventListener('pointerover', function (e) {
     if (e.pointerType && e.pointerType !== 'mouse') return;
     var el = e.target.closest && e.target.closest(SEL);
