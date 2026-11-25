@@ -5,6 +5,11 @@ CDN  = 'https://framerusercontent.com/images/'
 
 # Changes applied to both the homepage and the project-page template (shared CSS and scripts)
 PATCHES = [
+  ["      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n",
+   "      var size = vw * (parseFloat(box.getAttribute('data-w')) || 1) * 100 / ink;   // data-w: share of the screen width the name should span\n" \
+   "      var capM = parseFloat(box.getAttribute('data-max-m'));                      // data-max-m: largest size on phones, so page titles stay modest there\n" \
+   "      var capped = capM && vw <= 760 && size > capM; if (capped) size = capM;\n"],
+  ["      var pad = box.hasAttribute('data-pad') ? vw * 0.0195 : 0; ", "      var pad = box.hasAttribute('data-pad') ? vw * 0.0195 : (capped ? 16 : 0); "],
   # lighter dimming on project pictures when the header passes over them
   ['  .shot::after, .tile::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .4); opacity: 0; transition: opacity .3s ease; pointer-events: none; }',
    '  .shot::after, .tile::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .16); opacity: 0; transition: opacity .3s ease; pointer-events: none; }'],
@@ -68,6 +73,7 @@ PATCHES = [
    "    function check() {\n"],
 ]
 ARROW_SVG = %(<svg class="arw" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M1 10h30M22 2l9 8-9 8"/></svg>)
+MOBILE_MENU = File.read(File.join(__dir__, 'mobilemenu.html'), encoding: 'UTF-8')   # phones + tablets: full-screen menu page
 SPIN_JS = File.read(File.join(__dir__, 'spin.html'), encoding: 'UTF-8')   # cursor easter egg: circle the mouse and it becomes the spinning logo
 MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
 def arrows(s)
@@ -75,7 +81,7 @@ def arrows(s)
    .sub(%r{(<li><a href="(?:index\.html)?#works">Works</a></li>)}) { $1 + MENU_LINK }   # menu link to the Agency + Client Work page
    .sub(%r{\n *<li><a href="(?:index\.html)?#info">Info</a></li>}, '')
    .sub('<li><a href="#contact">Contact</a></li>', '<li><a href="contact.html">Contact</a></li>')
-   .sub('</body>') { VIDEO_JS + SPIN_JS + '</body>' }   # Info taken out of the menu
+   .sub('</body>') { VIDEO_JS + SPIN_JS + MOBILE_MENU + '</body>' }   # Info taken out of the menu
 end
 def patch(src)
   PATCHES.reduce(src) { |s, (from, to)| s.include?(from) ? s.sub(from, to) : abort("patch not found: #{from[0, 60]}") }
@@ -97,6 +103,7 @@ EXTRA_CSS = <<CSS
   .g { padding-left: 0; padding-right: 0; }
   .more .work .t, .more .work .tags { padding-left: 1.95vw; padding-right: 1vw; }   /* the text under the More works pictures stays in line with the page text */
   .ident .lab { font-size: 18px; margin-bottom: 18px; }   /* About / Visual identity / Design */
+  @media (max-width: 760px) { .intro.ident { padding: 9vh var(--pad) 6vh; } }   /* phones: same left edge as every other section */
   .g.one { grid-template-columns: 1fr; }
   .g.nat { display: flex; align-items: flex-start; }
   .g.nat .shot { flex: var(--r) 1 0; min-width: 0; }
@@ -321,7 +328,7 @@ end
 
 def wordmark(title)
   chars = title.chars.map { |c| %(<span class="ch">#{c == ' ' ? '&nbsp;' : esc(c)}</span>) }.join
-  %(<h1 class="wmbox" aria-label="#{esc(title)}"><span class="wm" aria-hidden="true">#{chars}<i class="bl"></i></span></h1>)
+  %(<h1 class="wmbox" data-max-m="54" aria-label="#{esc(title)}"><span class="wm" aria-hidden="true">#{chars}<i class="bl"></i></span></h1>)
 end
 
 # two pictures side by side, cropped to the same shape so they line up
@@ -484,26 +491,31 @@ ACW_CSS = <<CSS
   .field { position: relative; transition: height .6s cubic-bezier(.2, .7, .2, 1); height: #{format('%.1f', field_h)}vw; margin: 4vw 0 8vw; }
   .ft { position: absolute; left: var(--l); top: var(--t); width: var(--w); z-index: 1;
         animation: drift var(--dur) ease-in-out var(--del) infinite alternate; transition: opacity .5s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
-  .ft:hover { z-index: 5; animation-play-state: paused; }
+  .ft.on { z-index: 5; animation-play-state: paused; }   /* .on = hovered with a mouse, or tapped on a touch screen */
   .ft .pic { aspect-ratio: var(--ar); background: var(--tone) center / cover no-repeat; display: grid; place-items: center;
              transform-origin: var(--ox) 50%; transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
   .ft .pic > span { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: rgba(0, 0, 0, .4); }
-  .ft:hover .pic { transform: scale(1.45); }
+  .ft.on .pic { transform: scale(1.45); }
+  .ft { cursor: default; -webkit-tap-highlight-color: transparent; }
   .ft .cap { position: absolute; left: calc(var(--w) * var(--cx)); top: calc(100% + var(--h) * .225 * var(--cy) + 14px); width: max(calc(var(--w) * 1.45), 260px);
              opacity: 0; transform: translateY(-6px); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .7, .2, 1); pointer-events: none;
              background: var(--bg); padding: 6px 0; }
-  .ft:hover .cap { opacity: 1; transform: none; transition-delay: .15s; }
+  .ft.on .cap { opacity: 1; transform: none; transition-delay: .15s; }
   .ft .cap b { display: block; font-family: var(--label); font-weight: 500; text-transform: uppercase; font-size: 14px; color: var(--ink); }
   .ft .cap p { margin-top: 4px; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--fg); }
-  .field:has(.ft:hover) .ft:not(:hover) { opacity: .35; }
+  .field.has-on .ft:not(.on) { opacity: .35; }
   @keyframes drift { from { translate: 0 0; } to { translate: var(--dx) var(--dy); } }
   @media (prefers-reduced-motion: reduce) { .ft { animation: none; } }
   @media (max-width: 760px) {
     .field { height: auto; display: flex; flex-direction: column; gap: 48px; padding: 0 var(--pad); }
     .ft { position: relative; left: auto; top: auto; width: 72%; animation: none; }
     .ft:nth-child(even) { align-self: flex-end; width: 58%; }
-    .ft:hover .pic { transform: none; }
-    .ft .cap { position: static; opacity: 1; transform: none; width: auto; margin-top: 10px; }
+    .ft { transition: opacity .5s ease, width .6s cubic-bezier(.2, .7, .2, 1); }
+    .field .ft.on { width: 100%; }                                         /* phones: the tapped project grows to full width */
+    .ft.on .pic { transform: none; }
+    .ft .cap { position: static; width: auto; transform: none; opacity: 0; max-height: 0; overflow: hidden; margin-top: 0; padding: 0;
+               transition: opacity .35s ease, max-height .6s cubic-bezier(.2, .7, .2, 1), margin-top .5s ease; }
+    .ft.on .cap { opacity: 1; max-height: 260px; margin-top: 12px; transition-delay: .1s; }
   }
 CSS
 
@@ -594,11 +606,18 @@ acw = <<~HTML
         }
         setOff(off);
       }
-      var leaveT;
+      var leaveT, canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      function show(i) { tiles.forEach(function (t, j) { t.classList.toggle('on', j === i); }); field.classList.add('has-on'); hover(i); }
+      function hide() { tiles.forEach(function (t) { t.classList.remove('on'); }); field.classList.remove('has-on'); if (!phone.matches) setOff(tiles.map(function () { return 0; })); }
       tiles.forEach(function (t, i) {
-        t.addEventListener('mouseenter', function () { clearTimeout(leaveT); hover(i); });
-        t.addEventListener('mouseleave', function () { leaveT = setTimeout(function () { setOff(tiles.map(function () { return 0; })); }, 60); });
+        if (canHover) {                                   // mouse: hover opens a project
+          t.addEventListener('mouseenter', function () { clearTimeout(leaveT); show(i); });
+          t.addEventListener('mouseleave', function () { leaveT = setTimeout(hide, 60); });
+        } else {                                          // touch: tap opens it, tap again (or anywhere else) closes it
+          t.addEventListener('click', function (e) { e.stopPropagation(); if (t.classList.contains('on')) hide(); else show(i); });
+        }
       });
+      if (!canHover) document.addEventListener('click', function () { if (field.classList.contains('has-on')) hide(); });
       var timer;
       window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(base, 150); });
       (document.fonts ? document.fonts.ready : Promise.resolve()).then(base);
@@ -704,6 +723,7 @@ CONTACT_CSS = <<CSS
   html.ty-on .cursor .dot { background: var(--bg) !important; }
   @media (max-width: 760px) {
     .ct-form { grid-template-columns: 1fr; gap: 30px; }
+    .ct-head { font-size: 26px; }
   }
 CSS
 
