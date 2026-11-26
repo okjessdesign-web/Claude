@@ -974,14 +974,14 @@ NAME = 'Jessica Baker'
 SEO = {
   'index' => ["Okjess | #{NAME}, Graphic Designer in Toronto",
               "#{NAME} (Okjess) is an independent graphic designer in Toronto, Canada, working in branding, packaging, motion, editorial and experiential design.",
-              'images/noko-blind-box.jpg'],
+              'images/og-image.png'],
   'agency-client-work' => ["Agency + Client Work | Okjess",
               "Agency and client work by #{NAME}: experiential pop-ups, signage, packaging, ads and campaigns for Powerade, Liquid I.V., Cutwater, Welch's, TRESemmé and more.",
               'images/agency/powerade-tent.jpg'],
   'contact' => ["Contact | Okjess",
               "Get in touch with #{NAME}, an independent graphic designer in Toronto. Now booking projects for 2027.",
-              'images/noko-blind-box.jpg'],
-  '404' => ['Page not found | Okjess', "#{NAME} (Okjess), graphic designer in Toronto.", 'images/noko-blind-box.jpg'],
+              'images/og-image.png'],
+  '404' => ['Page not found | Okjess', "#{NAME} (Okjess), graphic designer in Toronto.", 'images/og-image.png'],
 }
 P.each do |slug, p|
   about = p[:about].to_s.gsub(/\s+/, ' ').strip
