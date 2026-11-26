@@ -1104,6 +1104,15 @@
     tone(784, 760, 0, 0.075, 0.03, 'triangle');
     tone(587, 523, 0.06, 0.11, 0.028, 'triangle');
   }
+  function okay() {                                                  // click the name (Okjess / Jessica Baker): a cute two-syllable "oh-kay" in tones
+    tone(466, 440, 0, 0.13, 0.05, 'triangle'); tone(932, 880, 0, 0.1, 0.012, 'sine');        // "oh": soft and a little low
+    tone(2400, 1800, 0.15, 0.015, 0.02, 'square');                                            // the tiny "k"
+    tone(659, 784, 0.16, 0.2, 0.055, 'triangle'); tone(1318, 1568, 0.16, 0.14, 0.012, 'sine'); // "kay": brighter, rising
+  }
+  function isName(t) {
+    var w = t.closest && t.closest('.wmbox'); if (w && w.textContent.replace(/\s/g, '') === 'Okjess') return true;
+    var s = t.closest && t.closest('span, small'); return !!(s && /Jessica Baker/.test(s.textContent) && s.textContent.length < 40);
+  }
   function sparkle() {                                             // the cursor turns into the spinning logo: a little twinkly rising run
     if (!ctx || ctx.state !== 'running') return;
     [1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f, f * 1.01, i * 0.055, 0.16, 0.045, 'triangle'); });
@@ -1118,7 +1127,7 @@
   });
   document.addEventListener('pointerdown', function (e) {
     var el = e.target.closest && e.target.closest(SEL);
-    if (el) pop(); else nope();                                      // empty space gets a soft muted tock (the first click also unlocks sound)
+    if (el) pop(); else if (isName(e.target)) { audio(); okay(); } else nope();                                      // empty space gets a soft muted tock (the first click also unlocks sound)
   }, true);
   // Let the pop finish before leaving for another page
   document.addEventListener('click', function (e) {
