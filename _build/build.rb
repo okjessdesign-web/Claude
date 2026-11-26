@@ -89,7 +89,7 @@ MOBILE_MENU = File.read(File.join(__dir__, 'mobilemenu.html'), encoding: 'UTF-8'
 SOUNDS_JS = File.read(File.join(__dir__, 'sounds.html'), encoding: 'UTF-8')   # soft hover ticks and click pops
 SPIN_JS = File.read(File.join(__dir__, 'spin.html'), encoding: 'UTF-8')   # cursor easter egg: circle the mouse and it becomes the spinning logo
 MENU_LINK = %(\n        <li><a href="agency-client-work.html">Agency + Client</a></li>)
-ICONS = %(<link rel="icon" href="favicon.svg" type="image/svg+xml">\n<link rel="icon" href="apple-touch-icon.png" type="image/png" sizes="180x180">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n)   # tab icon = the asterisk logo
+ICONS = %(<link rel="icon" href="favicon.ico" sizes="48x48">\n<link rel="icon" href="favicon-96.png" type="image/png" sizes="96x96">\n<link rel="icon" href="favicon.svg" type="image/svg+xml">\n<link rel="icon" href="apple-touch-icon.png" type="image/png" sizes="180x180">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n)   # tab icon = the asterisk logo
 def arrows(s)
   s = s.sub('</head>') { ICONS + '</head>' } unless s.include?('favicon.svg')
   s.gsub(%(<span aria-hidden="true">&rarr;</span>), ARROW_SVG)
@@ -976,7 +976,7 @@ DOMAIN = 'https://okjess.com/'
 NAME = 'Jessica Baker'
 SEO = {
   'index' => ["Okjess | #{NAME}, Graphic Designer in Toronto",
-              "#{NAME} (Okjess) is an independent graphic designer in Toronto, Canada, working in branding, packaging, motion, editorial and experiential design.",
+              "#{NAME} (Okjess) is an independent graphic designer in Toronto, specializing in branding for creative businesses, studios and founders who care about good design.",
               'images/og-image.png'],
   'agency-client-work' => ["Agency + Client Work | Okjess",
               "Agency and client work by #{NAME}: experiential pop-ups, signage, packaging, ads and campaigns for Powerade, Liquid I.V., Cutwater, Welch's, TRESemmé and more.",
@@ -993,7 +993,7 @@ P.each do |slug, p|
 end
 
 def seo_head(slug, title, desc, img)
-  url = slug == 'index' ? DOMAIN : "#{DOMAIN}#{slug}.html"
+  url = slug == 'index' ? DOMAIN : "#{DOMAIN}#{slug}"   # clean addresses, the same ones Google already knows from the Framer site
   tags = [%(<link rel="canonical" href="#{url}">),
           %(<meta property="og:url" content="#{url}">),
           %(<meta property="og:site_name" content="Okjess">),
@@ -1026,6 +1026,6 @@ end
 pages = SEO.keys - ['404']
 File.write(File.join(SITE, 'sitemap.xml'),
   %(<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n) +
-  pages.map { |s| "  <url><loc>#{s == 'index' ? DOMAIN : "#{DOMAIN}#{s}.html"}</loc></url>" }.join("\n") + "\n</urlset>\n")
+  pages.map { |s| "  <url><loc>#{s == 'index' ? DOMAIN : "#{DOMAIN}#{s}"}</loc></url>" }.join("\n") + "\n</urlset>\n")
 File.write(File.join(SITE, 'robots.txt'), "User-agent: *\nAllow: /\nDisallow: /index_1.html\nDisallow: /noko-blind-box_1.html\nDisallow: /_build/\n\nSitemap: #{DOMAIN}sitemap.xml\n")
 puts 'SEO tags, sitemap.xml, robots.txt'
