@@ -583,7 +583,7 @@ tiles = TILES.each_with_index.map do |(l, t, w, pic, pw, ph, title, desc, credit
                  l, t, w, w / ar, ar, TONES[i % 4], ox, {"0%" => "0", "50%" => "-.225", "100%" => "-.45"}[ox], 6 + (i * 7) % 5, (i * 3) % 7, [-8, 6, -5, 9][i % 4], [-14, 12, -10, 16][(i + 1) % 4])
   <<~H.chomp
         <div class="ft#{right ? ' r' : ''}" style="#{style}">
-          <div class="pic" style="background-image:url('images/agency/#{pic}')" role="img" aria-label="#{esc(title)}"></div>
+          <div class="pic" style="background-image:url('images/agency/#{pic}?v=#{File.mtime(File.join(SITE, 'images/agency', pic)).to_i.to_s(36)}')" role="img" aria-label="#{esc(title)}"></div>
           <div class="cap"><b>#{esc(title)}</b><p>#{esc(desc || LOREM).sub(/ (\S+)\z/, '&nbsp;\1')}</p>#{credit ? "<p class=\"cr\">#{esc(credit)}</p>" : ''}</div>
         </div>
   H
