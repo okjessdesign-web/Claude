@@ -357,7 +357,7 @@
   .nf h1 { font-family: var(--display); font-weight: 500; font-size: clamp(22px, 2.3vw, 38px); letter-spacing: -0.015em; color: var(--fg); }
   .nf a { font-size: 12px; text-transform: uppercase; color: var(--fg); }
   .nf a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  @media (max-width: 760px) { .glyph { gap: 3px; } }
+  @media (max-width: 760px) { .glyph { gap: 3px; } .nf-404 { --cell: clamp(10px, calc((100vw - 80px) / 17.2), 46px); } }   /* phones: the 404 always fits the screen */
 </style>
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" href="favicon-96.png" type="image/png" sizes="96x96">

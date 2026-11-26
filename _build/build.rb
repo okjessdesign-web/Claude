@@ -724,7 +724,8 @@ home = home.gsub(%r{<div class="shot" style="--img:url\('(images/[a-z-]+\.jpg)'\
 # first row: St. Jacobs small on the left, Noko big on the right (the row keeps its small-left / big-right layout; the two swap places)
 home = home.sub(%r{(<div class="row">\n)(\s*<a class="work" href="noko-blind-box\.html">.*?</a>\n)(\s*<a class="work" href="beyond-the-trails\.html">.*?</a>\n)}m) { $1 + $3 + $2 }
 home = trail_videos(home)
-home = home.sub("min-height: calc(100vh + var(--extra, 0px)); min-height: calc(100svh + var(--extra, 0px));", "min-height: 100vh; min-height: 100svh;") or abort("hero")   # homepage: the whole name (j included) fits on the first screen
+home = home.sub("min-height: calc(100vh + var(--extra, 0px)); min-height: calc(100svh + var(--extra, 0px));", "min-height: 100vh; min-height: 100svh;") or abort("hero")
+home = home.sub("</style>") { "  @media (orientation: landscape) and (max-height: 520px) { .hero { padding-top: 90px; } }   /* phones turned sideways: keep the tagline clear of the logo and menu */\n</style>" }   # homepage: the whole name (j included) fits on the first screen
 home = home.sub("  .row.flip { grid-template-columns: 67fr 32fr; }\n", "  .row.flip { grid-template-columns: 67fr 32fr; }\n  .whead + .row { border-top: 0; }   /* no line right under Selected Works */\n") or abort('no line')
 # St. Jacobs and Tipsy Tonic swap places on the homepage
 def swap_works(home, a, b)
@@ -942,7 +943,7 @@ NF_CSS = <<CSS
   .nf h1 { font-family: var(--display); font-weight: 500; font-size: clamp(22px, 2.3vw, 38px); letter-spacing: -0.015em; color: var(--fg); }
   .nf a { font-size: 12px; text-transform: uppercase; color: var(--fg); }
   .nf a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  @media (max-width: 760px) { .glyph { gap: 3px; } }
+  @media (max-width: 760px) { .glyph { gap: 3px; } .nf-404 { --cell: clamp(10px, calc((100vw - 80px) / 17.2), 46px); } }   /* phones: the 404 always fits the screen */
 CSS
 
 nf = <<~HTML
