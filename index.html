@@ -908,9 +908,10 @@
 })();
 </script>
 <script>
-// Tap or click the logo quickly (3+ times) and it spins with the twinkly chime, like circling the cursor.
+// Desktop: click the logo quickly (3+ times) and it spins with the twinkly chime, like circling the cursor.
 // One normal click still goes home: the link waits a moment to see whether more taps are coming.
 (function () {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;   // desktop only; on phones the logo is just a home link
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var taps = [], navT = null, rot = 0, vel = 0, raf = null, spinning = false, settleT = null;
   function logos() { return [].slice.call(document.querySelectorAll('.logo')); }
