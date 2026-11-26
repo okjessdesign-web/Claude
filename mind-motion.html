@@ -968,6 +968,43 @@
   }
 })();
 </script>
+<script>
+// Tap or click the logo quickly (3+ times) and it spins with the twinkly chime, like circling the cursor.
+// One normal click still goes home: the link waits a moment to see whether more taps are coming.
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var taps = [], navT = null, rot = 0, vel = 0, raf = null, spinning = false, settleT = null;
+  function logos() { return [].slice.call(document.querySelectorAll('.logo')); }
+  function setRot(v, ease) {
+    logos().forEach(function (l) { l.style.transition = ease ? 'transform .7s cubic-bezier(.2, .8, .2, 1)' : 'none'; l.style.transform = v ? 'rotate(' + v + 'deg)' : ''; });
+  }
+  function tick() {
+    rot += vel; vel *= 0.955;
+    setRot(rot, false);
+    if (Math.abs(vel) > 0.6) { raf = requestAnimationFrame(tick); return; }
+    raf = null;
+    var end = Math.ceil(rot / 360) * 360;              // glide on to a full turn so it lands upright
+    setRot(end, true);
+    settleT = setTimeout(function () { rot = 0; vel = 0; spinning = false; setRot(0, false); }, 750);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.logo');
+    if (!a || reduce || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    var now = performance.now(), href = a.href;
+    taps = taps.filter(function (t) { return now - t < 900; }); taps.push(now);
+    clearTimeout(navT);
+    if (taps.length >= 3 || spinning) {
+      if (!spinning) { spinning = true; document.dispatchEvent(new CustomEvent('okjess:spin')); }
+      clearTimeout(settleT);
+      vel = Math.min(vel + 13, 38);
+      if (!raf) raf = requestAnimationFrame(tick);
+      return;
+    }
+    navT = setTimeout(function () { if (!spinning) location.href = href; }, 380);
+  }, true);
+})();
+</script>
 <style>
   /* Phones + tablets: "Menu" opens a full-screen menu page with big, easy-to-tap links */
   @media (max-width: 1024px) { #navlinks { display: none !important; } }
