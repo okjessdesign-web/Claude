@@ -1048,34 +1048,10 @@
     tone(784, 760, 0, 0.075, 0.03, 'triangle');
     tone(587, 523, 0.06, 0.11, 0.028, 'triangle');
   }
-  function vowel(t0, dur, pitch, f1, f2, vol) {                       // a tiny synthetic voice: a buzzy tone shaped into a vowel by two filters
-    var c = audio(), t = c.currentTime + t0, o = c.createOscillator(), out = c.createGain();
-    o.type = 'sawtooth';
-    o.frequency.setValueAtTime(pitch[0], t);
-    for (var i = 1; i < pitch.length; i++) o.frequency.linearRampToValueAtTime(pitch[i], t + dur * i / (pitch.length - 1));
-    out.gain.setValueAtTime(0.0001, t);
-    out.gain.exponentialRampToValueAtTime(vol, t + 0.018);
-    out.gain.setValueAtTime(vol, t + dur * 0.6);
-    out.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    [[f1, 1], [f2, 0.7], [[2700, 2900], 0.25]].forEach(function (F) {
-      var bp = c.createBiquadFilter(), g = c.createGain();
-      bp.type = 'bandpass'; bp.Q.value = 8;
-      bp.frequency.setValueAtTime(F[0][0], t); bp.frequency.linearRampToValueAtTime(F[0][1], t + dur);
-      g.gain.value = F[1]; o.connect(bp); bp.connect(g); g.connect(out);
-    });
-    out.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
-  }
-  function burst(t0, dur, freq, vol) {                                // a soft breathy "k"
-    var c = audio(), t = c.currentTime + t0, n = Math.round(c.sampleRate * dur), buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
-    for (var i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
-    var s = c.createBufferSource(), bp = c.createBiquadFilter(), g = c.createGain();
-    s.buffer = buf; bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 1.5; g.gain.value = vol;
-    s.connect(bp); bp.connect(g); g.connect(c.destination); s.start(t);
-  }
-  function okay() {                                                  // click the name (Okjess / Jessica Baker): a little cartoon-avatar style "oh-kay"
-    vowel(0, 0.15, [380, 395, 360], [520, 480], [880, 820], 0.22);                    // "oh"
-    burst(0.15, 0.028, 2900, 0.12);                                                    // "k"
-    vowel(0.17, 0.24, [440, 520, 480, 430], [480, 330], [1850, 2350], 0.2);           // "ay", springing up then settling
+  function okay() {                                                  // click the name (Okjess / Jessica Baker): a cute, bouncy two-syllable "oh-kay" in tones
+    tone(554, 622, 0, 0.1, 0.05, 'triangle'); tone(1108, 1244, 0, 0.08, 0.012, 'sine');         // "oh": short, with a little lift
+    tone(2800, 2000, 0.11, 0.012, 0.02, 'square');                                              // the tiny "k"
+    tone(784, 1175, 0.12, 0.16, 0.055, 'triangle'); tone(1568, 2350, 0.12, 0.1, 0.012, 'sine');  // "kay": higher, springing up
   }
   function isName(t) {
     var w = t.closest && t.closest('.wmbox'); if (w && w.textContent.replace(/\s/g, '') === 'Okjess') return true;
