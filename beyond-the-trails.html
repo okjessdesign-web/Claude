@@ -433,12 +433,12 @@
     <div class="whead"><span>More works</span><a href="index.html#works">See all</a></div>
     <div class="g more">
       <a class="work" href="noko-blind-box.html">
-        <div class="shot" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
+        <div class="shot" style="--img:url('https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/Rrg2qJAJHJRopyiIjcKx4pVZ3Ik.mp4" poster="https://framerusercontent.com/images/zhPPJS3ymrXa8C1k9OmlylJk4.png?scale-down-to=1024" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
         <span class="t">Noko Blind Box</span>
         <span class="tags"><span>Packaging</span><span>Branding</span><span>Storytelling</span></span>
       </a>
       <a class="work" href="solis.html">
-        <div class="shot" style="--img:url('https://framerusercontent.com/images/SzsDJHPAmNKsB4VsCI4iDhI3tWU.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/mvYza2nC32CUGuQwNNQlFFz6rk.mp4" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
+        <div class="shot" style="--img:url('https://framerusercontent.com/images/SzsDJHPAmNKsB4VsCI4iDhI3tWU.png?scale-down-to=1024')"><video src="https://framerusercontent.com/assets/mvYza2nC32CUGuQwNNQlFFz6rk.mp4" poster="https://framerusercontent.com/images/SzsDJHPAmNKsB4VsCI4iDhI3tWU.png?scale-down-to=1024" muted loop playsinline preload="none" data-auto aria-hidden="true"></video></div>
         <span class="t">Control Room</span>
         <span class="tags"><span>Title Sequence</span><span>Motion</span><span>Illustration</span><span>Storytelling</span></span>
       </a>
@@ -915,13 +915,30 @@
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) {
       var v = e.target; v._on = e.isIntersecting;
-      if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; if (!still) { var p = v.play(); if (p) p.catch(function () {}); } }
+      if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; go(v); }
       else v.pause();
     });
   }, { rootMargin: '200px' });
-  function go(v) { if (v._on && v.paused && !still) { var p = v.play(); if (p) p.catch(function () {}); } }
+  function shown(v) {                    // on screen and not covered by the next card (phone cards stack over each other as you scroll)
+    var r = v.getBoundingClientRect(), H = window.innerHeight, W = window.innerWidth;
+    if (r.bottom <= 0 || r.top >= H || r.width === 0) return false;
+    var x = Math.min(W - 2, Math.max(1, r.left + r.width / 2)), y = Math.min(H - 2, Math.max(1, (Math.max(r.top, 0) + Math.min(r.bottom, H)) / 2));
+    var el = document.elementFromPoint(x, y);
+    return !el || v.parentNode.contains(el) || !el.closest('.work');
+  }
+  function go(v) {
+    if (still) return;
+    if (v._on && shown(v)) { if (v.paused) { var p = v.play(); if (p) p.catch(function () {}); } }
+    else if (!v.paused) v.pause();       // only the pictures you can see play, so phones never juggle too many videos at once
+  }
   [].forEach.call(vids, function (v) { io.observe(v); v.addEventListener('canplay', function () { go(v); }); });
+  var queued = false;
+  window.addEventListener('scroll', function () { if (queued) return; queued = true; setTimeout(function () { queued = false; [].forEach.call(vids, go); }, 150); }, { passive: true });
   setInterval(function () { [].forEach.call(vids, go); }, 2000);   // in case the browser paused one that is on screen
+  // iPhones in Low Power Mode won't start videos on their own; the first tap anywhere starts them (the homepage trail's too)
+  if (!still) ['touchend', 'click'].forEach(function (t) { document.addEventListener(t, function () {
+    [].forEach.call(document.querySelectorAll('video'), function (v) { if (v.paused && (!v.hasAttribute('data-auto') || (v._on && shown(v)))) { var p = v.play(); if (p) p.catch(function () {}); } });
+  }, { passive: true, capture: true }); });
 })();
 </script>
 <style>

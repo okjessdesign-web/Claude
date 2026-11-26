@@ -296,7 +296,7 @@ PREVIEW = {
   'collective-moments'      => [:video, 'WghI96voPXWWEbDOpue8WxsqISc.mp4', 1000, 1000],
   'corbeau-mocktail-lounge' => [:img, 'ZEfY8l2KCGs3EGNvBQByqnGmBDo.png', 4000, 3000],   # the store sign (Jess's pick; Framer used the pomegranates)
 }
-def video_tag(id) %(<video src="#{ASSETS}#{id}" muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end
+def video_tag(id, poster = nil) %(<video src="#{ASSETS}#{id}"#{poster ? %( poster="#{poster}") : ''} muted loop playsinline preload="none" data-auto aria-hidden="true"></video>) end   # poster: the still shows (never a blank box) until the video plays
 # a picture box showing the project's preview: still image as the background (also used by the homepage cursor trail), video on top when there is one
 # award sticker in a blue wavy seal, top left of the project's preview (homepage only)
 BADGE = { 'noko-blind-box' => %(<span class="badge"><img src="images/badges/rgd-2026-honourable-mention-flame.png" alt="RGD 2026 Student Awards, Honourable Mention"></span>) }   # homepage only
@@ -305,7 +305,7 @@ def preview_shot(slug, cls = 'shot', max = 1024, badge = false)
   r = w.to_f / h
   shape = cls.include?('hero-media') && r > LANDSCAPE ? "; aspect-ratio:#{format('%.3f', r)}; height:auto" : ''   # landscape top picture: its own shape, not cropped
   if kind == :video
-    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id)}#{badge ? BADGE[slug] : ''}</div>)
+    %(<div class="#{cls}" style="--img:url('#{P[slug][:thumb]}')#{shape}">#{video_tag(id, P[slug][:thumb])}#{badge ? BADGE[slug] : ''}</div>)
   else
     %(<div class="#{cls}" style="--img:url('#{img(id, w, h, max)[:url]}')#{shape}"></div>)
   end
@@ -332,13 +332,30 @@ VIDEO_JS = <<~H
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var v = e.target; v._on = e.isIntersecting;
-        if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; if (!still) { var p = v.play(); if (p) p.catch(function () {}); } }
+        if (e.isIntersecting) { if (v.preload === 'none') v.preload = 'auto'; go(v); }
         else v.pause();
       });
     }, { rootMargin: '200px' });
-    function go(v) { if (v._on && v.paused && !still) { var p = v.play(); if (p) p.catch(function () {}); } }
+    function shown(v) {                    // on screen and not covered by the next card (phone cards stack over each other as you scroll)
+      var r = v.getBoundingClientRect(), H = window.innerHeight, W = window.innerWidth;
+      if (r.bottom <= 0 || r.top >= H || r.width === 0) return false;
+      var x = Math.min(W - 2, Math.max(1, r.left + r.width / 2)), y = Math.min(H - 2, Math.max(1, (Math.max(r.top, 0) + Math.min(r.bottom, H)) / 2));
+      var el = document.elementFromPoint(x, y);
+      return !el || v.parentNode.contains(el) || !el.closest('.work');
+    }
+    function go(v) {
+      if (still) return;
+      if (v._on && shown(v)) { if (v.paused) { var p = v.play(); if (p) p.catch(function () {}); } }
+      else if (!v.paused) v.pause();       // only the pictures you can see play, so phones never juggle too many videos at once
+    }
     [].forEach.call(vids, function (v) { io.observe(v); v.addEventListener('canplay', function () { go(v); }); });
+    var queued = false;
+    window.addEventListener('scroll', function () { if (queued) return; queued = true; setTimeout(function () { queued = false; [].forEach.call(vids, go); }, 150); }, { passive: true });
     setInterval(function () { [].forEach.call(vids, go); }, 2000);   // in case the browser paused one that is on screen
+    // iPhones in Low Power Mode won't start videos on their own; the first tap anywhere starts them (the homepage trail's too)
+    if (!still) ['touchend', 'click'].forEach(function (t) { document.addEventListener(t, function () {
+      [].forEach.call(document.querySelectorAll('video'), function (v) { if (v.paused && (!v.hasAttribute('data-auto') || (v._on && shown(v)))) { var p = v.play(); if (p) p.catch(function () {}); } });
+    }, { passive: true, capture: true }); });
   })();
   </script>
 H

@@ -9,8 +9,8 @@
       if (it.v) return it.v;
       var v = document.createElement('video');
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto'; v.setAttribute('aria-hidden', 'true');
-      v.style.cssText = 'position:absolute;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none';
-      v.src = it.src; trail.appendChild(v);
+      v.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:.01;pointer-events:none;z-index:-1';   // kept on the page (iPhones stop a video that is taken off it), outside the trail so clearing old tiles never removes it
+      v.src = it.src; document.body.appendChild(v);
       var p = v.play(); if (p) p.catch(function () {});
       return (it.v = v);
     }
