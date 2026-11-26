@@ -966,6 +966,9 @@
 <style>
   /* Phones + tablets: "Menu" opens a full-screen menu page with big, easy-to-tap links */
   @media (max-width: 1024px) { #navlinks { display: none !important; } }
+  /* the page never slides sideways on phones (the big edge-to-edge type pokes a few px past the screen) */
+  html, body { overflow-x: clip; }
+  @supports not (overflow: clip) { body { overflow-x: hidden; } }
   .mm { position: fixed; inset: 0; z-index: 8000; background: var(--bg); display: flex; flex-direction: column; padding: 16px var(--pad) 28px;
         visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .7s cubic-bezier(.76, 0, .24, 1), visibility 0s .7s; }
   .mm.open { visibility: visible; clip-path: inset(0 0 0 0); transition: clip-path .7s cubic-bezier(.76, 0, .24, 1); }
